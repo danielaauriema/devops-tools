@@ -1,0 +1,19 @@
+---
+- name: create output dir
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - "{{ wg_local_data_path }}"
+    - "{{ wg_local_conf_path }}"
+  delegate_to: localhost
+
+- name: set server paths
+  set_fact:
+    wg_server_data_file: "{{ wg_local_data_path }}/server.yaml"
+    wg_server_conf_file: "{{ wg_local_conf_path }}/server.conf"
+
+- include_tasks : server.yml
+
+- include_tasks : client.yml
+  loop: "{{ wg_clients | dict2items }}"

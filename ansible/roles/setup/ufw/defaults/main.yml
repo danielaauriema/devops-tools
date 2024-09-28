@@ -1,0 +1,2 @@
+ufw_state: enabled
+ufw_ssh_port: "{{ ansible_port | default (22) }}"

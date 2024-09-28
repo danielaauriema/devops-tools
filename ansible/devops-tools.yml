@@ -1,0 +1,14 @@
+---
+- name: DevOps Tools Setup
+  hosts: server
+  become: true
+  gather_facts: no
+  roles:
+    - role: core/init
+    - role: setup/ufw
+    - role: wireguard/init
+    - role: wireguard/config
+      wg_clients:
+        home_pc: 2
+        mobile: 3
+    - role: wireguard/server

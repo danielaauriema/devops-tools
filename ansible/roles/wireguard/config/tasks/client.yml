@@ -1,0 +1,100 @@
+---
+- name: set client data
+  ansible.builtin.set_fact:
+    wg_client:
+        id: "{{ item.value }}"
+        name: "{{ item.key }}"  
+
+- name: set client paths
+  set_fact:
+    wg_client_data_path: "{{ wg_local_data_path }}/{{ wg_client.name }}"
+    wg_client_conf_path: "{{ wg_local_conf_path }}/{{ wg_client.name }}"
+
+- name: set client files and address
+  set_fact:
+    wg_client_addr: "{{ wg_network_prefix }}.{{ wg_client.id }}"
+    wg_client_data_file: "{{ wg_client_data_path }}/{{ wg_network_name }}.yaml"
+    wg_client_conf_file: "{{ wg_client_conf_path }}/{{ wg_network_name }}.conf"
+    wg_client_peer_file: "{{ wg_local_conf_path }}/~peer.conf"
+
+- name: create client paths
+  ansible.builtin.file:
+    path: "{{ create_client_path }}"
+    state: directory
+  delegate_to: localhost
+  loop:
+    - "{{ wg_client_data_path }}"
+    - "{{ wg_client_conf_path }}"
+  loop_control:
+    loop_var: create_client_path
+
+- block: 
+
+  - name: create client private key
+    shell: wg genkey
+    register: client_pvt_result
+    delegate_to: localhost
+    args:
+      creates: "{{ wg_client_data_file }}"
+
+  - name: create client public key
+    shell: "echo {{ client_pvt_result.stdout }} | wg pubkey"
+    register: client_pub_result
+    delegate_to: localhost
+    args:
+      creates: "{{ wg_client_data_file }}"
+
+  - name: create client psk
+    shell: wg genpsk
+    register: client_psk_result
+    delegate_to: localhost
+    args:
+      creates: "{{ wg_client_data_file }}"
+
+  - name: set client keys
+    set_fact:
+      wg_client_pvt_key: "{{ client_pvt_result.stdout }}"
+      wg_client_pub_key: "{{ client_pub_result.stdout }}"
+      wg_client_psk: "{{ client_psk_result.stdout }}"
+    when: client_pub_result.changed
+
+  - name: write client data file
+    ansible.builtin.template:
+      src: templates/client_data.j2
+      dest: "{{ wg_client_data_file }}"
+    delegate_to: localhost
+    when: client_pub_result.changed
+
+- block:
+
+  - name: include client vars from config file
+    ansible.builtin.include_vars:
+      file: "{{ wg_client_data_file }}"
+      name: wg_client_keys
+    when: not client_pub_result.changed
+
+  - name: set client keys from file
+    set_fact:
+      wg_client_pvt_key: "{{ wg_client_keys.client_pvt_key }}"
+      wg_client_pub_key: "{{ wg_client_keys.client_pub_key }}"
+      wg_client_psk: "{{ wg_client_keys.client_psk }}"
+    when: not client_pub_result.changed
+
+- name: write client config
+  ansible.builtin.template:
+    src: templates/client_conf.j2
+    dest: "{{ wg_client_conf_file }}"
+  delegate_to: localhost
+  changed_when: false
+
+- name: write client peer file
+  ansible.builtin.template:
+    src: templates/server_peer.j2
+    dest: "{{ wg_client_peer_file }}"
+  delegate_to: localhost
+  changed_when: false
+
+- name: add client peer to server config
+  shell: "cat {{ wg_client_peer_file }} >> {{ wg_server_conf_file }} && rm {{ wg_client_peer_file }}"
+  delegate_to: localhost
+  changed_when: false

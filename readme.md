@@ -2,8 +2,8 @@
 This project helps you setup your private/on-premise devops environment.
 
 The goal is to make it a complete set of tools contaning at least:
+- ***dns server***:  allow you to access your applications through an user friendly URI instead of the use of ip and port. This approach also helps you to escalate your server moving it to another location in a almost transparent way.
 - ***vpn connection***: allow you to acess your private environment from anywhere with encripted connection.
-- ***dns server***:  allow you to access your application through an user friendly URI instead of the use of ip and port. This approach also helps you to escalate your server moving it to another location in a almost transparent way.
 - ***open LDAP repository***: allows you access different applications with the same login and password. It also make easy to add your friends and give them access to your applications.
 - ***git server***: allow you to create your own projects and repositories to start your own CI/CD pipeline. 
 
@@ -38,6 +38,11 @@ This project uses ufw as a firewall. After being installed it will block all inc
 
 If you want to use a different one, you can set this up in the variables `ufw_ssh_port` and `ufw_ssh_address`. Be carefull to not lock you out of the server.
 
+## Bind9 (DNS)
+
+Bind9 is a free DNS server.
+You can set your own domain in the variable `core_domain`. Default is `devops-tools.local`.
+
 ## Wireguard (VPN)
 
 To setup up your own vpn, set the following variables if you want some customization:
@@ -45,6 +50,11 @@ To setup up your own vpn, set the following variables if you want some customiza
 - ***wg_network_name***: this is the interface name in the server and the file name for clients. Default is `wg_vpn`.
 - ***wg_server_port***: this is the port where the clients will connect.  Default is `51820`.
 - ***wg_server_internal_addr***: This the server address in the vpn. Default is `"{{ wg_network_prefix }}.1"`. Exemple: `172.16.20.1`.
+
+It will also setup the DNS server for you own DNS server. So, you can used personal URL's when connected through VPN.
+
+Default DNS config is: `{{ wg_server_internal_addr }}, 8.8.8.8, 8.8.4.4"`
+You can change to other servers by changing the value in `wg_client_dns`.
 
 ### Generating VPN keys
 

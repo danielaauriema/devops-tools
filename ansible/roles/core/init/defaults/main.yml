@@ -1,1 +1,6 @@
 apt_update_cache: yes
+
+core_domain: devops-tools.local
+
+core_network_prefix: "172.16.20"
+core_server_internal_addr: "{{ core_network_prefix }}.1"

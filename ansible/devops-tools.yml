@@ -6,6 +6,7 @@
   roles:
     - role: core/init
     - role: setup/ufw
+    - role: setup/bind9
     - role: wireguard/init
     - role: wireguard/config
       wg_clients:

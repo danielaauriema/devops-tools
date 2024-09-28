@@ -1,0 +1,5 @@
+---
+- name: "bind/restart"
+  systemd:
+    state: restarted
+    name: "bind9"

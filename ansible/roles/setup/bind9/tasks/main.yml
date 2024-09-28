@@ -1,7 +1,7 @@
 ---
 - name: install bind
   apt: 
-    name: bind9
+    name: bind9=1:9.18.28-1~deb12u2
     update_cache: no
 
 - name: copy config files

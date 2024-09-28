@@ -1,7 +1,7 @@
 ---
 - name: apt install ufw
   ansible.builtin.apt: 
-    name: ufw
+    name: ufw=0.36.2-1
     update_cache: "no"
   register: ufw_apt
 

@@ -2,8 +2,8 @@
 - name: install wireguard
   apt: 
     package: 
-      - wireguard
-      - resolvconf
+      - wireguard=1.0.20210914-1
+      - resolvconf=1.91+nmu1
     update_cache: "no"
 
 - name: Enable ipv4 forwarding

@@ -1,5 +1,5 @@
 ---
-- name: install wireguard
+- name: Install wireguard
   apt: 
     package: 
       - wireguard=1.0.20210914-1
@@ -18,20 +18,20 @@
   command: sysctl -p /etc/sysctl.conf 
   when: wg_ipv4fw_info.changed
 
-- name: copy config file
+- name: Copy config file
   copy:
     src: "{{ wg_server_conf_file }}"
     dest: "{{ wg_remote_config_path }}/{{ wg_network_name }}.conf"
   register: wg_copy_info   
 
-- name: start service
+- name: Start service
   systemd:
     state: started
     name: "wg-quick@{{ wg_network_name }}"
     enabled: true
   register: wg_start_info  
 
-- name: restart service
+- name: Restart service
   systemd:
     state: restarted
     name: "wg-quick@{{ wg_network_name }}"

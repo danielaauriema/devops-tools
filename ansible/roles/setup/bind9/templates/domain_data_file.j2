@@ -1,15 +1,15 @@
 ;
-; BIND data file for {{ core_domain }}
+; BIND data file for {{ core_base_domain }}
 ;
 $TTL      604800
-@         IN      SOA     {{ core_domain }}. root.{{ core_domain }}. (
+@         IN      SOA     {{ core_base_domain }}. root.{{ core_base_domain }}. (
                               3         ; Serial
                          604800         ; Refresh
                           86400         ; Retry
                         2419200         ; Expire
                          604800 )       ; Negative Cache TTL
 
-@         IN      NS      ns.{{ core_domain }}.
+@         IN      NS      ns.{{ core_base_domain }}.
 @         IN      A       {{ core_server_internal_addr }}
 @         IN      AAAA    ::1
 ns        IN      A       {{ core_server_internal_addr }}

@@ -1,11 +1,11 @@
 ---
-- name: apt install ufw
+- name: Install ufw
   ansible.builtin.apt: 
     name: ufw=0.36.2-1
     update_cache: "no"
   register: ufw_apt
 
-- name: allow SSH
+- name: Allow SSH
   ufw:
     rule: limit
     port: "{{ ufw_ssh_port }}"
@@ -13,7 +13,7 @@
     comment: SSH
     to_ip: "{{ ufw_ssh_address | default (ansible_host) }}" 
 
-- name: "deny everything and set state to {{ ufw_state }}"
+- name: "Deny everything and set state to {{ ufw_state }}"
   ufw:
     state: "{{ ufw_state }}"
     policy: deny

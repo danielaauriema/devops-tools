@@ -1,27 +1,27 @@
 ---
 - block:
 
-  - name: create server private key
+  - name: Create server private key
     shell: wg genkey
     register: server_pvt_result
     delegate_to: localhost
     args:
       creates: "{{ wg_server_data_file }}"
 
-  - name: create server public key
+  - name: Create server public key
     shell: "echo {{ server_pvt_result.stdout }} | wg pubkey"
     register: server_pub_result
     delegate_to: localhost
     args:
       creates: "{{ wg_server_data_file }}"
 
-  - name: set server keys
+  - name: Set server keys
     set_fact:
       wg_server_pvt_key: "{{ server_pvt_result.stdout }}"
       wg_server_pub_key: "{{ server_pub_result.stdout }}"
     when: server_pub_result.changed
 
-  - name: write server data file
+  - name: Write server data file
     ansible.builtin.template:
       src: templates/server_data.j2
       dest: "{{ wg_server_data_file }}"
@@ -31,22 +31,21 @@
 
 - block:
 
-  - name: include server vars from config file
+  - name: Include server vars from config file
     ansible.builtin.include_vars:
       file: "{{ wg_server_data_file }}"
       name: wg_server_keys
     when: not server_pub_result.changed
 
-  - name: set server keys from file
+  - name: Set server keys from file
     set_fact:
       wg_server_pvt_key: "{{ wg_server_keys.server_pvt_key }}"
       wg_server_pub_key: "{{ wg_server_keys.server_pub_key }}"
     when: not server_pub_result.changed
 
-- name: write server config file
+- name: Write server config file
   ansible.builtin.template:
     src: templates/server_intf.j2
     dest: "{{ wg_local_conf_path }}/server.conf"
   delegate_to: localhost
   changed_when: false
-

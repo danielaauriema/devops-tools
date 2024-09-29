@@ -1,0 +1,29 @@
+---  
+- name: Create ssl certs directories
+  ansible.builtin.file:
+    path: "{{ ssl_local_ca_certs_path }}"
+    state: directory
+  delegate_to: localhost
+
+- name: Generate host private key
+  delegate_to: localhost
+  openssl_privatekey:
+    path: "{{ ssl_cert_file_name }}.key"
+
+- name: Generate host CSR
+  delegate_to: localhost
+  openssl_csr:
+    path: "{{ ssl_cert_file_name }}.csr"
+    privatekey_path: "{{ ssl_cert_file_name }}.key"
+    common_name: "{{ ssl_cert_common_name }}"
+    organization_name: "{{ ssl_cert_organization_name }}"
+    subject_alt_name: "{{ ssl_cert_subject_alt_name }}"
+
+- name: Generate host certificate
+  delegate_to: localhost
+  openssl_certificate:
+    path: "{{ ssl_cert_file_name }}.crt"
+    csr_path: "{{ ssl_cert_file_name }}.csr"
+    ownca_path: "{{ ssl_local_ca_pub_key }}"
+    ownca_privatekey_path: "{{ ssl_local_ca_pvt_key }}"
+    provider: ownca

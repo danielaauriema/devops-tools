@@ -13,3 +13,7 @@
         home_pc: 2
         mobile: 3
     - role: wireguard/server
+    - role: setup/docker
+    - role: ssl/generate_ca
+    - role: ssl/generate_cert
+      ssl_cert_subdomain_name: ldap

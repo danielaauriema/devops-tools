@@ -1,25 +1,25 @@
 ---
-- name: shell apt update
+- name: Shell apt update
   shell: "apt update"
   changed_when: false
-  when: apt_update_cache
+  when: core_apt_update_cache
 
 - block:
   
-  - name: get root path
+  - name: Get root path
     shell: "realpath {{ playbook_dir }}/.."
-    register: local_root_path_register
+    register: core_root_path_register
     delegate_to: localhost
     changed_when: false
 
-  - name: set local_data_path
+  - name: Set core_local_data_path
     set_fact:
-      local_data_path: "{{ local_root_path_register.stdout }}/data"
+      core_local_data_path: "{{ core_root_path_register.stdout }}/data"
 
-  when: local_data_path is undefined
+  when: core_local_data_path is undefined
 
-- name: create local data path
+- name: Create local data path
   ansible.builtin.file:
-    path: "{{ local_data_path }}"
+    path: "{{ core_local_data_path }}"
     state: directory
   delegate_to: localhost

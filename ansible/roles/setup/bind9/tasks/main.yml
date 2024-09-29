@@ -1,28 +1,28 @@
 ---
-- name: install bind
+- name: Install bind
   apt: 
     name: bind9=1:9.18.28-1~deb12u2
     update_cache: no
 
-- name: copy config files
+- name: Copy config files
   block:
   
-  - name: copy named.conf.options
+  - name: Copy named.conf.options
     copy:
       src: named.conf.options
       dest: /etc/bind/
     notify: bind/restart
 
-  - name: "copy named.conf.local"
+  - name: "Copy named.conf.local"
     ansible.builtin.template:
       src: "templates/named.conf.local.j2"
       dest: "/etc/bind/named.conf.local"
     notify: bind/restart
   
-  - name: "copy domain_data_file"
+  - name: "Copy domain_data_file"
     ansible.builtin.template:
       src: "templates/domain_data_file.j2"
-      dest: "/etc/bind/db.{{ core_domain }}"
+      dest: "/etc/bind/db.{{ core_base_domain }}"
     notify: bind/restart
 
 - name: "UFW allow Bind9'"

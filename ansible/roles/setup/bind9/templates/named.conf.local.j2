@@ -1,4 +1,4 @@
-zone "{{ core_domain }}" {
+zone "{{ core_base_domain }}" {
     type master;
-    file "/etc/bind/db.{{ core_domain }}";
+    file "/etc/bind/db.{{ core_base_domain }}";
 };

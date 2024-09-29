@@ -1,0 +1,10 @@
+---
+- name: Create ssl directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - "{{ ssl_local_data_path }}"
+    - "{{ ssl_local_ca_root_path }}"
+    - "{{ ssl_local_ca_certs_path }}"
+  delegate_to: localhost

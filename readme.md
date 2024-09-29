@@ -19,7 +19,7 @@ Run then follqwing command to execute the project:
 ansible-playbook ./ansible/server.yml -i ./ansible/inventory
 ```
 
-# Going deeper in ansible-tools project
+# Going deeper in the devops-tools project
 
 This project uses ansible to install all requrired software and configuration in the remote host.
 

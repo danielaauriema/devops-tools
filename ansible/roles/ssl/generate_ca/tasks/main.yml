@@ -1,0 +1,31 @@
+---
+- name: Generate an OpenSSL private key
+  delegate_to: localhost
+  openssl_privatekey:
+    path: "{{ ssl_local_ca_pvt_key }}"
+
+- name: Generate Root CA CSR
+  delegate_to: localhost
+  openssl_csr:
+    path: "{{ ssl_local_ca_csr }}"
+    privatekey_path: "{{ ssl_local_ca_pvt_key }}"
+    common_name: "{{ ssl_csr_common_name}}"
+    organization_name: "{{ ssl_csr_organization_name }}"
+    basic_constraints:
+      - CA:TRUE
+    basic_constraints_critical: yes
+    key_usage:
+      - keyCertSign
+      - digitalSignature
+      - cRLSign
+    key_usage_critical: yes
+
+- name: Generate Root CA certificate
+  delegate_to: localhost
+  openssl_certificate:
+    path: "{{ ssl_local_ca_pub_key }}"
+    privatekey_path: "{{ ssl_local_ca_pvt_key }}"
+    csr_path: "{{ ssl_local_ca_csr }}"
+    provider: selfsigned
+
+

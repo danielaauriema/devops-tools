@@ -7,6 +7,9 @@
     - role: core/init
     - role: setup/ufw
     - role: setup/bind9
+    - role: bind/config
+      bind_subdomains: 
+        - { name: "*", addr: 172.16.20.1 }
     - role: wireguard/init
     - role: wireguard/config
       wg_clients:
@@ -15,5 +18,16 @@
     - role: wireguard/server
     - role: setup/docker
     - role: ssl/generate_ca
+    - role: docker/nginx/up
+    - role: docker/ldap
+    - role: docker/lam
     - role: ssl/generate_cert
       ssl_cert_subdomain_name: ldap
+    - role: docker/nginx/config
+      vars:/
+        nginx_site: ldap
+        nginx_template: proxy_https
+        nginx_proxy_pass: http://lam:80/
+        nginx_server_name: ldap.devops-tools.local
+      nginx_cert_base_name: "ldap.{{ core_base_domain }}"
+

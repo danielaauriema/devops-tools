@@ -1,0 +1,8 @@
+---
+- name: Create nginx directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - "{{ nginx_config_path }}"
+    - "{{ nginx_sites_path }}"

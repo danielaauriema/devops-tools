@@ -1,0 +1,25 @@
+---
+- name: Create ghcr.io/ldapaccountmanager container
+  docker_container:
+    name: "lam"
+    image: "ghcr.io/ldapaccountmanager/lam:stable"
+    state: started
+    restart: no
+    restart_policy: always
+    env:
+      LAM_SKIP_PRECONFIGURE: "false"
+      LDAP_DOMAIN: "{{ core_base_domain }}"
+      LDAP_BASE_DN: "{{ ldap_base }}"
+      LDAP_USERS_DN: "ou=people,{{ ldap_base }}"
+      LDAP_GROUPS_DN: "ou=groups,{{ ldap_base }}"
+      LDAP_SERVER: "ldap://ldap:1389"
+      LDAP_USER: "cn={{ ldap_admin_username }},{{ ldap_base }}"
+      LAM_LANG: "en_US"
+      LAM_PASSWORD: "{{ lam_password }}"
+      
+      LDAP_ORGANISATION: "{{ lam_organization_name }}"
+      LDAP_ADMIN_PASSWORD: "{{ ldap_bind_password }}"
+      LDAP_READONLY_USER_PASSWORD: "{{ ldap_bind_password }}"
+    network_mode: bridge
+    networks:
+      - name: "{{ core_docker_network }}"

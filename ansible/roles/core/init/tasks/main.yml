@@ -4,6 +4,11 @@
   changed_when: false
   when: core_apt_update_cache
 
+- name: Create remote data dir
+  ansible.builtin.file:
+    path: "{{ core_remote_data_path }}"
+    state: directory
+
 - block:
   
   - name: Get root path

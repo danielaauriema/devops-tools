@@ -1,0 +1,3 @@
+---
+dependencies:
+- role: docker/nginx/commons

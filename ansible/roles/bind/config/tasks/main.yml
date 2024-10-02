@@ -1,0 +1,10 @@
+---
+- name: "Copy domain_data_file"
+  ansible.builtin.template:
+    src: "templates/domain_data_file.j2"
+    dest: "/etc/bind/db.{{ core_base_domain }}"
+
+- name: Restart service bind
+  ansible.builtin.service:
+    name: bind9
+    state: restarted

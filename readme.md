@@ -41,7 +41,7 @@ If you want to use a different one, you can set this up in the variables `ufw_ss
 ## Bind9 (DNS)
 
 Bind9 is a free DNS server.
-You can set your own domain in the variable `core_domain`. Default is `devops-tools.local`.
+You can set your own domain in the variable `core_base_domain`. Default is `devops-tools.local`.
 
 ## Wireguard (VPN)
 

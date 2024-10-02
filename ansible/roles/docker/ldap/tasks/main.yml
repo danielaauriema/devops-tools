@@ -1,0 +1,26 @@
+---
+- name: Create remote data dir
+  ansible.builtin.file:
+    path: "{{ core_remote_data_path }}/openldap"
+    state: directory
+    mode: 0775
+
+- name: Create open LDAP container
+  docker_container:
+    name: "ldap"
+    image: "bitnami/openldap:2.6.8"
+    state: started
+    restart: no
+    restart_policy : always
+    volumes:
+      - "{{ core_remote_data_path }}/openldap:/bitnami/openldap:rw"
+    env:
+      LDAP_ROOT: "{{ ldap_root }}"
+      LDAP_ADMIN_USERNAME: "{{ ldap_admin_username }}"
+      LDAP_ADMIN_PASSWORD: "{{ ldap_admin_password }}"
+      LDAP_BASE: "{{ ldap_base }}"
+      LDAP_BIND_DN: "{{ ldap_bind_dn }}" 
+      LDAP_BIND_PASSWORD: "{{ ldap_bind_password }}"      
+    network_mode: bridge
+    networks:
+      - name: "{{ core_docker_network }}"

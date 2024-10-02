@@ -17,17 +17,36 @@
         mobile: 3
     - role: wireguard/server
     - role: setup/docker
+
+    # generate SSL certificates
     - role: ssl/generate_ca
-    - role: docker/nginx/up
-    - role: docker/ldap
-    - role: docker/lam
     - role: ssl/generate_cert
       ssl_cert_subdomain_name: ldap
+    - role: ssl/generate_cert
+      ssl_cert_subdomain_name: pgadmin
+
+    # reverse-proxy
+    - role: docker/nginx/up
+
+    # ldap tools
+    - role: docker/ldap
+    - role: docker/lam
     - role: docker/nginx/config
-      vars:/
+      vars:
         nginx_site: ldap
         nginx_template: proxy_https
-        nginx_proxy_pass: http://lam:80/
+        nginx_proxy_pass: http://lam/
         nginx_server_name: ldap.devops-tools.local
       nginx_cert_base_name: "ldap.{{ core_base_domain }}"
+
+    # database tools
+    - role: docker/postgres
+    - role: docker/pg_admin
+    - role: docker/nginx/config
+      vars:
+        nginx_site: pgadmin
+        nginx_template: proxy_https
+        nginx_proxy_pass: http://pgadmin/
+        nginx_server_name: pgadmin.devops-tools.local
+      nginx_cert_base_name: "pgadmin.{{ core_base_domain }}"
 

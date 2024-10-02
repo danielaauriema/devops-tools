@@ -1,0 +1,18 @@
+---
+- name: Create postgres container
+  docker_container:
+    name: "postgres"
+    image: "postgres:16.4-bullseye"
+    state: started
+    restart: no
+    restart_policy : always
+    volumes:
+      - "{{ postgres_local_data}}:{{ postgres_data }}"
+    env:
+        POSTGRES_DB: "{{ postgres_db }}"
+        POSTGRES_USER: "{{ postgres_user }}"
+        POSTGRES_PASSWORD: "{{ postgres_password }}"
+        PGDATA: "{{ postgres_data }}"
+    network_mode: bridge
+    networks:
+      - name: "{{ core_docker_network }}"

@@ -12,6 +12,8 @@
     state: started
     restart: no
     restart_policy : always
+    ports:
+      - "1389:1389"
     volumes:
       - "{{ core_remote_data_path }}/openldap:/bitnami/openldap:rw"
     env:
@@ -24,3 +26,54 @@
     network_mode: bridge
     networks:
       - name: "{{ core_docker_network }}"
+
+- apt:
+    pkg: python3-ldap
+
+- name: create ldap ou=groups
+  community.general.ldap_entry:
+    dn: ou=groups,dc=devops-tools,dc=local
+    objectClass: 
+      - organizationalUnit
+    server_uri: ldap://{{ core_server_internal_addr }}:1389
+    bind_dn: "{{ ldap_bind_dn }}" 
+    bind_pw: "{{ ldap_bind_password }}"  
+
+- name: create ldap ou=people
+  community.general.ldap_entry:
+    dn: ou=people,dc=devops-tools,dc=local
+    objectClass: 
+      - organizationalUnit
+    server_uri: ldap://{{ core_server_internal_addr }}:1389
+    bind_dn: "{{ ldap_bind_dn }}" 
+    bind_pw: "{{ ldap_bind_password }}"  
+
+- name: create ldap people
+  community.general.ldap_entry:
+    dn: cn=people,ou=groups,dc=devops-tools,dc=local
+    objectClass: 
+      - posixGroup
+    attributes:
+      gidNumber: 1000
+    server_uri: ldap://{{ core_server_internal_addr }}:1389
+    bind_dn: "{{ ldap_bind_dn }}" 
+    bind_pw: "{{ ldap_bind_password }}"  
+
+- name: Make sure we have an admin user
+  community.general.ldap_entry:
+    dn: cn=devops,ou=people,dc=devops-tools,dc=local
+    objectClass:
+      - posixAccount
+      - simpleSecurityObject
+      - organizationalRole
+    attributes:
+      uid: devops
+      uidNumber: 1000
+      gidNumber: 1000
+      homeDirectory: /home/devops
+      description: DevOps Tools User
+      userPassword: "password"
+    server_uri: ldap://{{ core_server_internal_addr }}:1389
+    bind_dn: "{{ ldap_bind_dn }}" 
+    bind_pw: "{{ ldap_bind_password }}"  
+

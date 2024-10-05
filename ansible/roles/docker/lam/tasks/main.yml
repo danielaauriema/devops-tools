@@ -6,6 +6,8 @@
     state: started
     restart: no
     restart_policy: always
+    ports:
+      - "8081:80"
     env:
       LAM_SKIP_PRECONFIGURE: "false"
       LDAP_DOMAIN: "{{ core_base_domain }}"

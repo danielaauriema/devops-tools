@@ -1,4 +1,10 @@
 ---
+- name: Install python-dev/psycopg2
+  apt: 
+    package: 
+      - python3-psycopg2
+    update_cache: no
+
 - name: Create postgres container
   docker_container:
     name: "postgres"
@@ -6,6 +12,8 @@
     state: started
     restart: no
     restart_policy : always
+    ports:
+      - "5432:5432"
     volumes:
       - "{{ postgres_local_data}}:{{ postgres_data }}"
     env:
@@ -16,3 +24,12 @@
     network_mode: bridge
     networks:
       - name: "{{ core_docker_network }}"
+
+- name: "UFW allow Postgres'"
+  ufw:
+    rule: allow
+    port: "5432"
+    proto: tcp
+    direction: "in"
+    comment: "postgres"
+    to_ip: "{{ ansible_host }}"

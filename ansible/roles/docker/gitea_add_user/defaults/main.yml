@@ -1,0 +1,3 @@
+gitea_admin_user: "gitea"
+gitea_admin_password: "password"
+gitea_admin_email: "gitea@devops-tools.local"

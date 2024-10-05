@@ -1,9 +1,14 @@
 ---  
-- name: Create ssl certs directories
+- name: Create local ssl certs directories
   ansible.builtin.file:
     path: "{{ ssl_local_ca_certs_path }}"
     state: directory
   delegate_to: localhost
+
+- name: Create remote ssl certs directories
+  ansible.builtin.file:
+    path: "{{ core_remote_data_path }}/ssl/certs"
+    state: directory
 
 - name: Generate host private key
   delegate_to: localhost

@@ -9,7 +9,7 @@
     - role: setup/bind9
     - role: bind/config
       bind_subdomains: 
-        - { name: "*", addr: 172.16.20.1 }
+        - { name: "*", addr: "{{ core_server_internal_addr }}" }
     - role: wireguard/init
     - role: wireguard/config
       wg_clients:
@@ -24,6 +24,8 @@
       ssl_cert_subdomain_name: ldap
     - role: ssl/generate_cert
       ssl_cert_subdomain_name: pgadmin
+    - role: ssl/generate_cert
+      ssl_cert_subdomain_name: gitea
 
     # reverse-proxy
     - role: docker/nginx/up
@@ -50,3 +52,19 @@
         nginx_server_name: pgadmin.devops-tools.local
       nginx_cert_base_name: "pgadmin.{{ core_base_domain }}"
 
+    - role: db/postgres/add_db
+      pg_db_name: "gitea"
+      pg_db_user: "gitea"
+      pg_db_password: "password"
+      pg_login_host: "{{ ansible_host }}"
+      pg_login_user: "admin"
+      pg_login_password: "password"      
+    - role: docker/gitea
+    - role: docker/nginx/config
+      vars:
+        nginx_site: gitea
+        nginx_template: proxy_https
+        nginx_proxy_pass: http://gitea:3000/
+        nginx_server_name: gitea.devops-tools.local
+      nginx_cert_base_name: "gitea.{{ core_base_domain }}"
+    - role: docker/gitea_add_user

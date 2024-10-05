@@ -1,0 +1,44 @@
+---
+- name: set admin user
+  set_fact:
+    gitea_add_user_cmd: > 
+      gitea admin user create 
+      --username {{ gitea_admin_user }} 
+      --password {{ gitea_admin_password }} 
+      --email {{ gitea_admin_email }} 
+      --admin -c /data/gitea/conf/app.ini"
+    gitea_add_ldap: > 
+      gitea admin auth add-ldap 
+      --name ldap 
+      --security-protocol unencrypted 
+      --host ldap 
+      --port 1389
+      --user-search-base 'ou=people,dc=devops-tools,dc=local' 
+      --user-filter '(&(objectClass=posixAccount)(uid=%s))' 
+      --email-attribute mail 
+      --bind-dn 'cn=admin,dc=devops-tools,dc=local' 
+      --bind-password 'password'
+      --skip-tls-verify 
+- name: "wait for HTTP"
+  uri:
+    url: "https://gitea.devops-tools.local/"
+    status_code: 200
+    validate_certs: false
+  register: result
+  until: result.status == 200
+  retries: 60
+  delay: 10
+
+- name: Run a add user
+  community.docker.docker_container_exec:
+    container: gitea
+    user: git
+    command: "{{ gitea_add_user_cmd }}"
+  ignore_errors: true
+
+- name: Run add ldap
+  community.docker.docker_container_exec:
+    container: gitea
+    user: git
+    command: "{{ gitea_add_ldap }}"
+  ignore_errors: true

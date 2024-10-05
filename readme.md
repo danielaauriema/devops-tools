@@ -1,5 +1,5 @@
 
-This project helps you setup your private/on-premise devops environment.
+This project is a prototype that helps you setup your private/on-premise devops environment.
 
 The goal is to make it a complete set of tools contaning at least:
 - ***dns server***:  allow you to access your applications through an user friendly URI instead of the use of ip and port. This approach also helps you to escalate your server moving it to another location in a almost transparent way.

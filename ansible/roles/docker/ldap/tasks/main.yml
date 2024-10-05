@@ -22,7 +22,9 @@
       LDAP_ADMIN_PASSWORD: "{{ ldap_admin_password }}"
       LDAP_BASE: "{{ ldap_base }}"
       LDAP_BIND_DN: "{{ ldap_bind_dn }}" 
-      LDAP_BIND_PASSWORD: "{{ ldap_bind_password }}"      
+      LDAP_BIND_PASSWORD: "{{ ldap_bind_password }}"   
+      LDAP_USERS: " "
+      LDAP_PASSWORDS: " "
     network_mode: bridge
     networks:
       - name: "{{ core_docker_network }}"
@@ -48,7 +50,7 @@
     bind_dn: "{{ ldap_bind_dn }}" 
     bind_pw: "{{ ldap_bind_password }}"  
 
-- name: create ldap people
+- name: create ldap posixGroup people
   community.general.ldap_entry:
     dn: cn=people,ou=groups,dc=devops-tools,dc=local
     objectClass: 

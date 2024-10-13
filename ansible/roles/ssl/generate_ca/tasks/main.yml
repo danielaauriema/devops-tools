@@ -2,7 +2,7 @@
 - name: Generate an OpenSSL private key
   openssl_privatekey:
     path: "{{ ssl_ca_pvt_key }}"
-    mode: "0775"
+    mode: 0775
 
 - name: Generate Root CA CSR
   openssl_csr:
@@ -25,4 +25,4 @@
     privatekey_path: "{{ ssl_ca_pvt_key }}"
     csr_path: "{{ ssl_ca_csr }}"
     provider: selfsigned
-    mode: "0775"
+    mode: 0775

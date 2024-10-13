@@ -1,0 +1,3 @@
+---
+nginx_template: proxy_https
+nginx_cert_base_name: "_.devops-tools.local"

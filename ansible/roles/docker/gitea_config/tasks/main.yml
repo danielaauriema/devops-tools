@@ -19,6 +19,7 @@
       --bind-dn 'cn=admin,dc=devops-tools,dc=local' 
       --bind-password 'password'
       --skip-tls-verify 
+
 - name: "wait for HTTP"
   uri:
     url: "https://gitea.devops-tools.local/"
@@ -26,10 +27,10 @@
     validate_certs: false
   register: result
   until: result.status == 200
-  retries: 60
-  delay: 10
+  retries: 120
+  delay: 5
 
-- name: Run a add user
+- name: Run add user
   community.docker.docker_container_exec:
     container: gitea
     user: git

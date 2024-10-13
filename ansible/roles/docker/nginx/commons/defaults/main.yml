@@ -1,6 +1,10 @@
 ---
-nginx_local_sites: "{{ core_remote_data_path }}/www"
+nginx_network: "devops-tools"
 
-nginx_data_path: "{{ core_remote_data_path }}/nginx"
+nginx_data_path: "/data/nginx"
 nginx_config_path: "{{ nginx_data_path }}/conf.d"
 nginx_sites_path: "{{ nginx_data_path }}/sites"
+nginx_templates_path: "{{ nginx_data_path }}/templates"
+
+nginx_certs_path: "/data/ssl/certs"
+nginx_server_addr: "{{ ansible_host }}"

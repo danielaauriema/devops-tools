@@ -6,3 +6,4 @@
   loop:
     - "{{ nginx_config_path }}"
     - "{{ nginx_sites_path }}"
+    - "{{ nginx_templates_path }}"

@@ -1,12 +1,7 @@
 ---
 - name: Create docker network
   docker_network:
-    name: "{{ core_docker_network }}"
-
-- name: Stop nginx container
-  docker_container:
-    name: "nginx"
-    state: absent
+    name: "{{ nginx_network }}"
 
 - name: Create nginx container
   docker_container:
@@ -22,17 +17,17 @@
       - "{{ nginx_data_path }}/templates:/etc/nginx/templates"
       - "{{ nginx_data_path }}/conf.d:/etc/nginx/conf.d"
       - "{{ nginx_data_path }}/sites:/var/www/"
-      - "/data/ssl/certs:/data/ssl/certs/"
+      - "{{ nginx_certs_path }}:/data/ssl/certs/"
     network_mode: bridge
     networks:
-      - name: "{{ core_docker_network }}"
+      - name: "{{ nginx_network }}"
 
 - name: "UFW allow NGINX http"
   ufw:
     rule: allow
     port: "80"
     proto: tcp
-    to_ip: "{{ core_server_internal_addr }}" 
+    to_ip: "{{ nginx_server_addr }}" 
     comment: NGINX/http
 
 - name: "UFW allow NGINX https"
@@ -40,5 +35,5 @@
     rule: allow
     port: "443"
     proto: tcp
-    to_ip: "{{ core_server_internal_addr }}" 
+    to_ip: "{{ nginx_server_addr }}" 
     comment: NGINX/https

@@ -20,13 +20,6 @@
     # ldap tools
     - role: docker/ldap
     - role: docker/lam
-    - role: docker/nginx/config
-      vars:
-        nginx_site: ldap
-        nginx_template: proxy_https
-        nginx_proxy_pass: http://lam/
-        nginx_server_name: ldap.devops-tools.local
-      nginx_cert_base_name: "_.{{ core_base_domain }}"
 
     # # database tools
     - role: docker/postgres
@@ -35,16 +28,9 @@
     - role: ssl/copy
       ssl_cert_subdomain_name: _
       ssl_cert_common_name: "*.devops-tools.local"    
-    - role: docker/nginx/config
-      vars:
-        nginx_site: pgadmin
-        nginx_template: proxy_https
-        nginx_proxy_pass: http://pgadmin/
-        nginx_server_name: pgadmin.devops-tools.local
-      nginx_cert_base_name: "_.{{ core_base_domain }}"
 
     # install gitea
-    - role: db/postgres/add_db
+    - role: postgres/add_db
       pg_db_name: "gitea"
       pg_db_user: "gitea"
       pg_db_password: "password"
@@ -52,11 +38,17 @@
       pg_login_user: "admin"
       pg_login_password: "password"      
     - role: docker/gitea
+
     - role: docker/nginx/config
-      vars:
-        nginx_site: gitea
-        nginx_template: proxy_https
-        nginx_proxy_pass: http://gitea:3000/
-        nginx_server_name: gitea.devops-tools.local
-      nginx_cert_base_name: "_.{{ core_base_domain }}"
-    - role: docker/gitea_add_user
+      nginx_sites:
+        - nginx_site: ldap
+          nginx_proxy_pass: http://lam/
+          nginx_server_name: ldap.devops-tools.local
+        - nginx_site: pgadmin
+          nginx_proxy_pass: http://pgadmin/
+          nginx_server_name: pgadmin.devops-tools.local
+        - nginx_site: "gitea"
+          nginx_proxy_pass: http://gitea:3000/
+          nginx_server_name: gitea.devops-tools.local
+
+    - role: docker/gitea_config

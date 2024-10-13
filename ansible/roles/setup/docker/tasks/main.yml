@@ -51,5 +51,4 @@
     name: "{{ ansible_user }}"
     groups: docker
     append: yes
-  notify: "core/reboot"
   

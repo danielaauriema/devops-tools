@@ -1,5 +1,5 @@
 [Interface]
-PrivateKey = {{ wg_server_pvt_key }}
+PrivateKey = {{ wg_server_keys.server_pvt_key }}
 Address = {{ wg_server_internal_addr }}/32
 ListenPort = {{ wg_server_port }}
 PreUp = iptables -A FORWARD -i {{ wg_server_intf_name }} -j ACCEPT  

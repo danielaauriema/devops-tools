@@ -1,21 +1,23 @@
 ---
-wg_network_prefix: "{{ core_network_prefix }}"
+wg_network_prefix: "172.16.20"
 wg_network_name: wg_vpn
 
+wg_server_addr: "{{ hostvars['server'].ansible_host }}"
 wg_server_port: 51820
 wg_server_intf_name: "{{ wg_network_name }}"
-wg_server_internal_addr: "{{ core_server_internal_addr }}"
-
-wg_server_data_file: "{{ wg_local_data_path }}/server.yaml"
-wg_server_conf_file: "{{ wg_local_conf_path }}/server.conf"
+wg_server_internal_addr: "{{ wg_network_prefix }}.1"
 
 wg_client_persistent_keepalive: 25
 wg_client_dns: "{{ wg_server_internal_addr }}, 8.8.8.8, 8.8.4.4"
 wg_client_allowed_ips: "{{ wg_network_prefix }}.0/24"
 
-wg_local_root_path: "{{ core_local_data_path }}/wireguard"
-wg_local_data_path: "{{ wg_local_root_path }}/data"
-wg_local_conf_path: "{{ wg_local_root_path }}/config"
+wg_data_path: "/data/wireguard"
+wg_yaml_path: "{{ wg_data_path }}/{{ wg_network_name }}"
+wg_conf_path: "{{ wg_data_path }}/conf"
 
-wg_remote_config_path: "/etc/wireguard"
+wg_server_conf_path: "{{ wg_conf_path }}/servers"
+wg_server_yaml_file: "{{ wg_yaml_path }}/{{ wg_network_name }}.yaml"
+wg_server_conf_file: "{{ wg_server_conf_path }}/{{ wg_network_name }}.conf"
+
+wg_remote_conf_path: "/etc/wireguard"
 

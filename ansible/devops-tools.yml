@@ -4,19 +4,15 @@
   become: true
   gather_facts: no
   roles:
+    # server setup
     - role: core/init
+    
     - role: setup/ufw
     - role: setup/bind9
-    - role: bind/config
-      bind_subdomains: 
-        - { name: "*", addr: "{{ core_server_internal_addr }}" }
-    - role: wireguard/init
-    - role: wireguard/config
-      wg_clients:
-        home_pc: 2
-        mobile: 3
-    - role: wireguard/server
     - role: setup/docker
+
+    # install wireguard
+    - role: wireguard/server  
 
     # generate SSL certificates
     - role: ssl/generate_ca
@@ -27,7 +23,7 @@
     - role: ssl/generate_cert
       ssl_cert_subdomain_name: gitea
 
-    # reverse-proxy
+    # install nginx/reverse-proxy
     - role: docker/nginx/up
 
     # ldap tools
@@ -52,6 +48,7 @@
         nginx_server_name: pgadmin.devops-tools.local
       nginx_cert_base_name: "pgadmin.{{ core_base_domain }}"
 
+    # install gitea
     - role: db/postgres/add_db
       pg_db_name: "gitea"
       pg_db_user: "gitea"

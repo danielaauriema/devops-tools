@@ -5,93 +5,60 @@
         id: "{{ item.value }}"
         name: "{{ item.key }}"  
 
-- name: Set client paths
+- name: Set client config path
   set_fact:
-    wg_client_data_path: "{{ wg_local_data_path }}/{{ wg_client.name }}"
-    wg_client_conf_path: "{{ wg_local_conf_path }}/{{ wg_client.name }}"
+    wg_client_conf_path: "{{ wg_conf_path }}/{{ wg_client.name }}"
 
-- name: Set client files and address
-  set_fact:
-    wg_client_addr: "{{ wg_network_prefix }}.{{ wg_client.id }}"
-    wg_client_data_file: "{{ wg_client_data_path }}/{{ wg_network_name }}.yaml"
-    wg_client_conf_file: "{{ wg_client_conf_path }}/{{ wg_network_name }}.conf"
-    wg_client_peer_file: "{{ wg_local_conf_path }}/~peer.conf"
-
-- name: Create client paths
-  ansible.builtin.file:
-    path: "{{ create_client_path }}"
+- name: Create client config directory
+  file:
+    path: "{{ wg_client_conf_path }}"
     state: directory
-  delegate_to: localhost
-  loop:
-    - "{{ wg_client_data_path }}"
-    - "{{ wg_client_conf_path }}"
-  loop_control:
-    loop_var: create_client_path
 
-- block: 
+- name: Set client files and data
+  set_fact:
+    wg_client_yaml_file: "{{ wg_yaml_path }}/{{ wg_client.name }}.yaml"
+    wg_client_conf_file: "{{ wg_client_conf_path }}/{{ wg_network_name }}.conf"
+    wg_client_addr: "{{ wg_network_prefix }}.{{ wg_client.id }}"
+    wg_client_peer_file: "{{ wg_conf_path }}/~peer.conf"
 
-  - name: Create client private key
-    shell: wg genkey
-    register: client_pvt_result
-    delegate_to: localhost
-    args:
-      creates: "{{ wg_client_data_file }}"
+- name: Create client private key
+  shell: wg genkey
+  register: wg_client_pvt_result
+  args:
+    creates: "{{ wg_client_yaml_file }}"
 
-  - name: Create client public key
-    shell: "echo {{ client_pvt_result.stdout }} | wg pubkey"
-    register: client_pub_result
-    delegate_to: localhost
-    args:
-      creates: "{{ wg_client_data_file }}"
+- name: Create client public key
+  shell: "echo {{ wg_client_pvt_result.stdout }} | wg pubkey"
+  register: wg_client_pub_result
+  args:
+    creates: "{{ wg_client_yaml_file }}"
 
-  - name: Create client psk
-    shell: wg genpsk
-    register: client_psk_result
-    delegate_to: localhost
-    args:
-      creates: "{{ wg_client_data_file }}"
+- name: Create client psk
+  shell: wg genpsk
+  register: wg_client_psk_result
+  args:
+    creates: "{{ wg_client_yaml_file }}"
 
-  - name: Set client keys
-    set_fact:
-      wg_client_pvt_key: "{{ client_pvt_result.stdout }}"
-      wg_client_pub_key: "{{ client_pub_result.stdout }}"
-      wg_client_psk: "{{ client_psk_result.stdout }}"
-    when: client_pub_result.changed
+- name: Write client yaml file
+  template:
+    src: templates/client_yaml.j2
+    dest: "{{ wg_client_yaml_file }}"
+  when: wg_client_pub_result.changed
 
-  - name: Write client data file
-    ansible.builtin.template:
-      src: templates/client_data.j2
-      dest: "{{ wg_client_data_file }}"
-    delegate_to: localhost
-    when: client_pub_result.changed
+- name: Include client vars from yaml file
+  include_vars:
+    file: "{{ wg_client_yaml_file }}"
+    name: wg_client_keys
 
-- block:
-
-  - name: Include client vars from config file
-    ansible.builtin.include_vars:
-      file: "{{ wg_client_data_file }}"
-      name: wg_client_keys
-    when: not client_pub_result.changed
-
-  - name: Set client keys from file
-    set_fact:
-      wg_client_pvt_key: "{{ wg_client_keys.client_pvt_key }}"
-      wg_client_pub_key: "{{ wg_client_keys.client_pub_key }}"
-      wg_client_psk: "{{ wg_client_keys.client_psk }}"
-    when: not client_pub_result.changed
-
-- name: Write client config
-  ansible.builtin.template:
+- name: Write client config file
+  template:
     src: templates/client_conf.j2
     dest: "{{ wg_client_conf_file }}"
-  delegate_to: localhost
-  changed_when: false
 
 - name: Write client peer file
-  ansible.builtin.template:
+  template:
     src: templates/server_peer.j2
     dest: "{{ wg_client_peer_file }}"
-  delegate_to: localhost
   changed_when: false
 
 - name: Add client peer to server config

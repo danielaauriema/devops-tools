@@ -1,11 +1,4 @@
 ---
-- name: Install wireguard
-  apt: 
-    package: 
-      - wireguard=1.0.20210914-1
-      - resolvconf=1.91+nmu1
-    update_cache: "no"
-
 - name: Enable ipv4 forwarding
   replace:
     path: /etc/sysctl.conf
@@ -21,7 +14,7 @@
 - name: Copy config file
   copy:
     src: "{{ wg_server_conf_file }}"
-    dest: "{{ wg_remote_config_path }}/{{ wg_network_name }}.conf"
+    dest: "{{ wg_remote_conf_path }}"
   register: wg_copy_info   
 
 - name: Start service

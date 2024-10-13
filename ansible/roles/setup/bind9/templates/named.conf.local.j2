@@ -1,4 +1,4 @@
-zone "{{ core_base_domain }}" {
+zone "{{ bind9_ns_domain }}" {
     type master;
-    file "/etc/bind/db.{{ core_base_domain }}";
+    file "{{ bind9_path }}/db.{{ bind9_ns_domain }}";
 };

@@ -1,19 +1,14 @@
 ---
-- name: Create output dir
-  ansible.builtin.file:
+- name: "Create wireguard directory: {{ item }}"
+  file:
     path: "{{ item }}"
     state: directory
   loop:
-    - "{{ wg_local_data_path }}"
-    - "{{ wg_local_conf_path }}"
-  delegate_to: localhost
-
-- name: Set server paths
-  set_fact:
-    wg_server_data_file: "{{ wg_local_data_path }}/server.yaml"
-    wg_server_conf_file: "{{ wg_local_conf_path }}/server.conf"
+    - "{{ wg_yaml_path }}"
+    - "{{ wg_conf_path }}"
+    - "{{ wg_server_conf_path }}"
 
 - include_tasks : server.yml
 
-- include_tasks : client.yml
+- include_tasks : client.yml  
   loop: "{{ wg_clients | dict2items }}"

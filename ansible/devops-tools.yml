@@ -14,15 +14,6 @@
     # install wireguard
     - role: wireguard/server  
 
-    # generate SSL certificates
-    - role: ssl/generate_ca
-    - role: ssl/generate_cert
-      ssl_cert_subdomain_name: ldap
-    - role: ssl/generate_cert
-      ssl_cert_subdomain_name: pgadmin
-    - role: ssl/generate_cert
-      ssl_cert_subdomain_name: gitea
-
     # install nginx/reverse-proxy
     - role: docker/nginx/up
 
@@ -35,18 +26,22 @@
         nginx_template: proxy_https
         nginx_proxy_pass: http://lam/
         nginx_server_name: ldap.devops-tools.local
-      nginx_cert_base_name: "ldap.{{ core_base_domain }}"
+      nginx_cert_base_name: "_.{{ core_base_domain }}"
 
-    # database tools
+    # # database tools
     - role: docker/postgres
     - role: docker/pg_admin
+
+    - role: ssl/copy
+      ssl_cert_subdomain_name: _
+      ssl_cert_common_name: "*.devops-tools.local"    
     - role: docker/nginx/config
       vars:
         nginx_site: pgadmin
         nginx_template: proxy_https
         nginx_proxy_pass: http://pgadmin/
         nginx_server_name: pgadmin.devops-tools.local
-      nginx_cert_base_name: "pgadmin.{{ core_base_domain }}"
+      nginx_cert_base_name: "_.{{ core_base_domain }}"
 
     # install gitea
     - role: db/postgres/add_db
@@ -63,5 +58,5 @@
         nginx_template: proxy_https
         nginx_proxy_pass: http://gitea:3000/
         nginx_server_name: gitea.devops-tools.local
-      nginx_cert_base_name: "gitea.{{ core_base_domain }}"
+      nginx_cert_base_name: "_.{{ core_base_domain }}"
     - role: docker/gitea_add_user

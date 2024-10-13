@@ -1,22 +1,21 @@
 ---  
-- name: Create local ssl certs directories
-  ansible.builtin.file:
-    path: "{{ ssl_local_ca_certs_path }}"
-    state: directory
-  delegate_to: localhost
+# - name: Create ssl certs directories
+#   ansible.builtin.file:
+#     path: "{{ ssl_ca_certs_path }}"
+#     state: directory
+#   delegate_to: localhost
 
-- name: Create remote ssl certs directories
-  ansible.builtin.file:
-    path: "{{ core_remote_data_path }}/ssl/certs"
-    state: directory
+# - name: Create remote ssl certs directories
+#   ansible.builtin.file:
+#     path: "{{ core_remote_data_path }}/ssl/certs"
+#     state: directory
 
 - name: Generate host private key
-  delegate_to: localhost
   openssl_privatekey:
     path: "{{ ssl_cert_file_name }}.key"
+    mode: "0775"
 
 - name: Generate host CSR
-  delegate_to: localhost
   openssl_csr:
     path: "{{ ssl_cert_file_name }}.csr"
     privatekey_path: "{{ ssl_cert_file_name }}.key"
@@ -25,18 +24,19 @@
     subject_alt_name: "{{ ssl_cert_subject_alt_name }}"
 
 - name: Generate host certificate
-  delegate_to: localhost
   openssl_certificate:
     path: "{{ ssl_cert_file_name }}.crt"
     csr_path: "{{ ssl_cert_file_name }}.csr"
-    ownca_path: "{{ ssl_local_ca_pub_key }}"
-    ownca_privatekey_path: "{{ ssl_local_ca_pvt_key }}"
+    ownca_path: "{{ ssl_ca_pub_key }}"
+    ownca_privatekey_path: "{{ ssl_ca_pvt_key }}"
     provider: ownca
+    mode: "0775"
 
-- name: Copy certificates 
-  ansible.builtin.copy:
-    src: "{{ item }}"
-    dest: "{{ core_remote_data_path }}/ssl/certs"
-  loop:
-    - "{{ ssl_cert_file_name }}.key"
-    - "{{ ssl_cert_file_name }}.crt"
+# - name: Copy certificates 
+#   copy:
+#     src: "{{ item }}"
+#     dest: "/data/ssl/certs"
+#   dekegate_to: server
+#   loop:
+#     - "{{ ssl_cert_file_name }}.key"
+#     - "{{ ssl_cert_file_name }}.crt"

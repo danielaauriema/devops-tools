@@ -5,12 +5,17 @@ gitea_db_name: "gitea"
 gitea_db_schema: "public"
 gitea_db_user: "gitea"
 gitea_db_password: "password"
+
 gitea_admin_user: "gitea"
 gitea_admin_password: "password"
 gitea_admin_email: "gitea@devops-tools.local"
-gitea_app_name: "Gitea :: devops-tools! (auto)"
+
+gitea_app_name: "Gitea :: devops-tools!"
 gitea_domain: "gitea.devops-tools.local"
 gitea_root_url: "https://gitea.devops-tools.local"
 gitea_data_path: "/data/gitea"
+gitea_network: "devops-tools"
+gitea_log_level: "Debug" # Trace, Debug, Info, Warn, Error, Fatal
+gitea_run_mode: "dev" # dev, prod
  
 

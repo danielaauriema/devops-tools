@@ -12,44 +12,33 @@
     state: started
     restart: no
     restart_policy : always
-    recreate: true
     ports:
       - "3000:3000"
-      - "2222:22"
+      - "222:22"
     volumes:
       - /data/gitea:/data
       - /etc/timezone:/etc/timezone:ro 
       - /etc/localtime:/etc/localtime:ro 
     env:
-      # database
+      # database config/bitnami
       GITEA__database__DB_TYPE: "postgres"
       GITEA__database__HOST: "{{ gitea_db_host }}"
       GITEA__database__NAME: "{{ gitea_db_name }}"
       GITEA__database__USER: "{{ gitea_db_user }}"
       GITEA__database__PASSWD: "{{ gitea_db_password }}"
-
-
-      # admin
-      # GITEA__admin__USER: "{{ gitea_admin_user }}"
-      # GITEA__admin__PASSWORD: "{{ gitea_admin_password }}"
-      # GITEA__admin__EMAIL: "{{ gitea_admin_email }}"
       GITEA__APP_NAME: "{{ gitea_app_name }}"
-      # config
-
+      # gitea config
       GITEA____RUN_MODE: "dev"
       GITEA____APP_NAME: "{{ gitea_app_name }}"
       GITEA__log__LEVEL: "Debug"
       GITEA__security__INSTALL_LOCK: "true"
       GITEA__service__DISABLE_REGISTRATION: "true"
-      GITEA__server__SSH_PORT: "2222"
+      GITEA__server__SSH_PORT: "222"
       GITEA__server__SSH_LISTEN_PORT: "22"
       GITEA__server__DOMAIN: "{{ gitea_domain }}"
       GITEA__server__ROOT_URL: "{{ gitea_root_url }}" 
-
-      # USER_UID: "1001"
-      # USER_GID: "1001"
-
+      GITEA__repository__DEFAULT_BRANCH: "master"
     network_mode: bridge
     networks:
-      - name: "{{ core_docker_network }}"
+      - name: "{{ gitea_network }}"
 

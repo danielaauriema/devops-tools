@@ -23,7 +23,7 @@
 
     # database tools
     - role: docker/postgres
-    - role: docker/pg_admin
+    - role: docker/pgadmin
 
     - role: ssl/copy
       ssl_cert_subdomain_name: _

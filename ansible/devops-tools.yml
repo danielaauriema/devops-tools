@@ -4,51 +4,51 @@
   become: true
   gather_facts: no
   roles:
-    # server setup
-    - role: core/init
+    # # server setup
+    # - role: core/init
     
-    - role: setup/ufw
-    - role: setup/bind9
-    - role: setup/docker
+    # - role: setup/ufw
+    # - role: setup/bind9
+    # - role: setup/docker
 
-    # install wireguard
-    - role: wireguard/server  
+    # # install wireguard
+    # - role: wireguard/server  
 
     # install nginx/reverse-proxy
-    - role: docker/nginx/up
+    # - role: docker/nginx/up
 
-    # ldap tools
-    - role: docker/ldap
+    # # ldap tools
+    # - role: docker/ldap
     - role: docker/lam
 
     # # database tools
-    - role: docker/postgres
-    - role: docker/pg_admin
+    # - role: docker/postgres
+    # - role: docker/pg_admin
 
-    - role: ssl/copy
-      ssl_cert_subdomain_name: _
-      ssl_cert_common_name: "*.devops-tools.local"    
+    # - role: ssl/copy
+    #   ssl_cert_subdomain_name: _
+    #   ssl_cert_common_name: "*.devops-tools.local"    
 
-    # install gitea
-    - role: postgres/add_db
-      pg_db_name: "gitea"
-      pg_db_user: "gitea"
-      pg_db_password: "password"
-      pg_login_host: "{{ ansible_host }}"
-      pg_login_user: "admin"
-      pg_login_password: "password"      
-    - role: docker/gitea
+    # # install gitea
+    # - role: postgres/add_db
+    #   pg_db_name: "gitea"
+    #   pg_db_user: "gitea"
+    #   pg_db_password: "password"
+    #   pg_login_host: "{{ ansible_host }}"
+    #   pg_login_user: "admin"
+    #   pg_login_password: "password"      
+    # - role: docker/gitea
 
-    - role: docker/nginx/config
-      nginx_sites:
-        - nginx_site: ldap
-          nginx_proxy_pass: http://lam/
-          nginx_server_name: ldap.devops-tools.local
-        - nginx_site: pgadmin
-          nginx_proxy_pass: http://pgadmin/
-          nginx_server_name: pgadmin.devops-tools.local
-        - nginx_site: "gitea"
-          nginx_proxy_pass: http://gitea:3000/
-          nginx_server_name: gitea.devops-tools.local
+    # - role: docker/nginx/config
+    #   nginx_sites:
+    #     - nginx_site: ldap
+    #       nginx_proxy_pass: http://lam/
+    #       nginx_server_name: ldap.devops-tools.local
+    #     - nginx_site: pgadmin
+    #       nginx_proxy_pass: http://pgadmin/
+    #       nginx_server_name: pgadmin.devops-tools.local
+    #     - nginx_site: "gitea"
+    #       nginx_proxy_pass: http://gitea:3000/
+    #       nginx_server_name: gitea.devops-tools.local
 
-    - role: docker/gitea_config
+    # - role: docker/gitea_config

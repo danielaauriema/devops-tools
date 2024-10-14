@@ -7,15 +7,15 @@
     restart: no
     restart_policy: always
     ports:
-      - "8081:80"
+      - "{{ lam_port_bind }}:80"
     env:
       LAM_SKIP_PRECONFIGURE: "false"
-      LDAP_DOMAIN: "{{ core_base_domain }}"
-      LDAP_BASE_DN: "{{ ldap_base }}"
-      LDAP_USERS_DN: "ou=people,{{ ldap_base }}"
-      LDAP_GROUPS_DN: "ou=groups,{{ ldap_base }}"
+      LDAP_DOMAIN: "{{ ldap_base_dn }}"
+      LDAP_BASE_DN: "{{ ldap_base_dn }}"
+      LDAP_USERS_DN: "ou=people,{{ ldap_base_dn }}"
+      LDAP_GROUPS_DN: "ou=groups,{{ ldap_base_dn }}"
       LDAP_SERVER: "ldap://ldap:1389"
-      LDAP_USER: "cn={{ ldap_admin_username }},{{ ldap_base }}"
+      LDAP_USER: "cn={{ ldap_admin_username }},{{ ldap_base_dn }}"
       LAM_LANG: "en_US"
       LAM_PASSWORD: "{{ lam_password }}"
       
@@ -24,4 +24,4 @@
       LDAP_READONLY_USER_PASSWORD: "{{ ldap_bind_password }}"
     network_mode: bridge
     networks:
-      - name: "{{ core_docker_network }}"
+      - name: "{{ lam_network }}"

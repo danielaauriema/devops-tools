@@ -1,7 +1,7 @@
 ---
 - name: Create remote data dir
-  ansible.builtin.file:
-    path: "{{ core_remote_data_path }}/openldap"
+  file:
+    path: "{{ ldap_data_path }}"
     state: directory
     mode: 0775
 
@@ -13,69 +13,69 @@
     restart: no
     restart_policy : always
     ports:
-      - "1389:1389"
+      - "{{ ldap_port_bind }}:1389"
     volumes:
-      - "{{ core_remote_data_path }}/openldap:/bitnami/openldap:rw"
+      - "{{ ldap_data_path }}:/bitnami/openldap:rw"
     env:
-      LDAP_ROOT: "{{ ldap_root }}"
+      LDAP_ROOT: "{{ ldap_base_dn }}"
       LDAP_ADMIN_USERNAME: "{{ ldap_admin_username }}"
       LDAP_ADMIN_PASSWORD: "{{ ldap_admin_password }}"
-      LDAP_BASE: "{{ ldap_base }}"
+      LDAP_BASE: "{{ ldap_base_dn }}"
       LDAP_BIND_DN: "{{ ldap_bind_dn }}" 
       LDAP_BIND_PASSWORD: "{{ ldap_bind_password }}"   
       LDAP_USERS: " "
       LDAP_PASSWORDS: " "
     network_mode: bridge
     networks:
-      - name: "{{ core_docker_network }}"
+      - name: "{{ ldap_network }}"
 
 - apt:
     pkg: python3-ldap
 
 - name: create ldap ou=groups
-  community.general.ldap_entry:
-    dn: ou=groups,dc=devops-tools,dc=local
+  ldap_entry:
+    dn: "ou=groups,{{ ldap_base_dn }}"
     objectClass: 
       - organizationalUnit
-    server_uri: ldap://{{ core_server_internal_addr }}:1389
+    server_uri: "{{ ldap_server_uri }}"
     bind_dn: "{{ ldap_bind_dn }}" 
     bind_pw: "{{ ldap_bind_password }}"  
 
 - name: create ldap ou=people
-  community.general.ldap_entry:
-    dn: ou=people,dc=devops-tools,dc=local
+  ldap_entry:
+    dn: "ou=people,{{ ldap_base_dn }}"
     objectClass: 
       - organizationalUnit
-    server_uri: ldap://{{ core_server_internal_addr }}:1389
+    server_uri: "{{ ldap_server_uri }}"
     bind_dn: "{{ ldap_bind_dn }}" 
     bind_pw: "{{ ldap_bind_password }}"  
 
 - name: create ldap posixGroup people
-  community.general.ldap_entry:
-    dn: cn=people,ou=groups,dc=devops-tools,dc=local
+  ldap_entry:
+    dn: "cn=people,ou=groups,{{ ldap_base_dn }}"
     objectClass: 
       - posixGroup
     attributes:
       gidNumber: 1000
-    server_uri: ldap://{{ core_server_internal_addr }}:1389
+    server_uri: "{{ ldap_server_uri }}"
     bind_dn: "{{ ldap_bind_dn }}" 
     bind_pw: "{{ ldap_bind_password }}"  
 
-- name: Make sure we have an admin user
-  community.general.ldap_entry:
-    dn: cn=devops,ou=people,dc=devops-tools,dc=local
+- name: "Create LDAP user {{ ldap_user_id }}"
+  ldap_entry:
+    dn: "cn={{ ldap_user_id }},ou=people,{{ ldap_base_dn }}"
     objectClass:
       - posixAccount
       - simpleSecurityObject
       - organizationalRole
     attributes:
-      uid: devops
+      uid: "{{ ldap_user_id }}"
       uidNumber: 1000
       gidNumber: 1000
-      homeDirectory: /home/devops
-      description: DevOps Tools User
-      userPassword: "password"
-    server_uri: ldap://{{ core_server_internal_addr }}:1389
+      homeDirectory: "/home/{{ ldap_user_id }}"
+      description: "{{ ldap_user_description }}"
+      userPassword: "{{ ldap_user_password }}"
+    server_uri: "{{ ldap_server_uri }}"
     bind_dn: "{{ ldap_bind_dn }}" 
     bind_pw: "{{ ldap_bind_password }}"  
 

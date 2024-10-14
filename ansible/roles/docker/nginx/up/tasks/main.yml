@@ -11,8 +11,8 @@
     restart: no
     restart_policy : always
     ports:
-    - 80:80
-    - 443:443
+    - "{{ nginx_http_port_bind }}:80"
+    - "{{ nginx_https_port_bind }}:443"
     volumes:
       - "{{ nginx_data_path }}/templates:/etc/nginx/templates"
       - "{{ nginx_data_path }}/conf.d:/etc/nginx/conf.d"
@@ -22,18 +22,18 @@
     networks:
       - name: "{{ nginx_network }}"
 
-- name: "UFW allow NGINX http"
-  ufw:
-    rule: allow
-    port: "80"
-    proto: tcp
-    to_ip: "{{ nginx_server_addr }}" 
-    comment: NGINX/http
+# - name: "UFW allow NGINX http"
+#   ufw:
+#     rule: deny
+#     port: "80"
+#     proto: tcp
+#     to_ip: "{{ nginx_server_addr }}" 
+#     comment: NGINX/http
 
-- name: "UFW allow NGINX https"
-  ufw:
-    rule: allow
-    port: "443"
-    proto: tcp
-    to_ip: "{{ nginx_server_addr }}" 
-    comment: NGINX/https
+# - name: "UFW allow NGINX https"
+#   ufw:
+#     rule: deny
+#     port: "443"
+#     proto: tcp
+#     to_ip: "{{ nginx_server_addr }}" 
+#     comment: NGINX/https

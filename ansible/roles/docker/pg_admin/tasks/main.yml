@@ -1,7 +1,7 @@
 ---
 - name: Create remote data dir
   ansible.builtin.file:
-    path: "{{ core_remote_data_path }}/pgadmin/data"
+    path: "{{ pgadmin_data_path }}"
     state: directory
     mode: 0775
 
@@ -13,10 +13,10 @@
     restart: no
     restart_policy : always
     volumes:
-      - /data/pgadmin/data:/var/lib/pgadmin:rw  
+      - "{{ pgadmin_data_path }}:/var/lib/pgadmin:rw"  
     env:
       PGADMIN_DEFAULT_EMAIL: "{{ pgadmin_default_email }}"
       PGADMIN_DEFAULT_PASSWORD: "{{ pgadmin_default_password }}"
     network_mode: bridge
     networks:
-      - name: "{{ core_docker_network }}"
+      - name: "{{ pgadmin_network }}"

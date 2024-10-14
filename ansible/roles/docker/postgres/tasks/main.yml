@@ -25,11 +25,3 @@
     networks:
       - name: "{{ postgres_network }}"
 
-- name: "UFW allow Postgres'"
-  ufw:
-    rule: deny
-    port: "{{ postgres_port }}"
-    proto: tcp
-    direction: "in"
-    comment: "postgres"
-    to_ip: "{{ postgres_ufw_ip }}"

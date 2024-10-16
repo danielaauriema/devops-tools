@@ -6,8 +6,9 @@
     state: started
     restart: no
     restart_policy: always
-    ports:
-      - "{{ lam_port_bind }}:80"
+    comparisons:
+      published_ports: strict
+    ports: "{{ lam_port_bind }}"
     env:
       LAM_SKIP_PRECONFIGURE: "false"
       LDAP_DOMAIN: "{{ ldap_base_dn }}"

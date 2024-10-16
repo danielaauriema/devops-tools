@@ -12,9 +12,9 @@
     state: started
     restart: no
     restart_policy : always
-    ports:
-      - "3000:3000"
-      - "222:22"
+    comparisons:
+      published_ports: strict      
+    ports: "{{ gitea_port_binds }}"
     volumes:
       - /data/gitea:/data
       - /etc/timezone:/etc/timezone:ro 
@@ -33,7 +33,7 @@
       GITEA__log__LEVEL: "Debug"
       GITEA__security__INSTALL_LOCK: "true"
       GITEA__service__DISABLE_REGISTRATION: "true"
-      GITEA__server__SSH_PORT: "222"
+      GITEA__server__SSH_PORT: "{{ gitea_ssh_port }}"
       GITEA__server__SSH_LISTEN_PORT: "22"
       GITEA__server__DOMAIN: "{{ gitea_domain }}"
       GITEA__server__ROOT_URL: "{{ gitea_root_url }}" 

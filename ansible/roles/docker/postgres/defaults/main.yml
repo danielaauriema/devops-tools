@@ -5,5 +5,5 @@ postgres_password: "password"
 postgres_data_path: "/data/postgres"
 
 postgres_port: "5432"
-postgres_port_bind: "{{ postgres_port }}"
 postgres_network: "devops-tools"
+postgres_port_bind: "{{ ansible_host }}:{{ postgres_port }}:5432"

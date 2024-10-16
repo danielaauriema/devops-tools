@@ -21,6 +21,7 @@
 - name: "UFW allow Bind9"
   ufw:
     rule: allow
-    name: Bind9
-    to_ip: "{{ bind9_server_addr }}" 
+    port: 53
+    direction: "in"
     comment: Bind/DNS  
+    to_ip: "{{ bind9_server_addr }}" 

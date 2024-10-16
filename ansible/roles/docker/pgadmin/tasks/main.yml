@@ -12,6 +12,9 @@
     state: started
     restart: no
     restart_policy : always
+    comparisons:
+      published_ports: strict      
+    ports: "{{ pgadmin_port_binds }}"
     volumes:
       - "{{ pgadmin_data_path }}:/var/lib/pgadmin:rw"  
     env:

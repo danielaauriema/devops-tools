@@ -17,5 +17,10 @@ gitea_data_path: "/data/gitea"
 gitea_network: "devops-tools"
 gitea_log_level: "Debug" # Trace, Debug, Info, Warn, Error, Fatal
 gitea_run_mode: "dev" # dev, prod
+
+gitea_ssh_port: "222"
+gitea_port_binds:
+  # - "{{ ansible_host }}:3000:3000"
+  - "{{ ansible_host }}:{{ gitea_ssh_port }}:22"
  
 

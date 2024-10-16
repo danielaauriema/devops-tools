@@ -12,8 +12,9 @@
     state: started
     restart: no
     restart_policy : always
-    ports:
-      - "{{ postgres_port_bind }}:5432"
+    comparisons:
+      published_ports: strict      
+    ports: "{{ postgres_port_bind }}"
     volumes:
       - "{{ postgres_data_path }}:/data/postgres"
     env:

@@ -12,8 +12,9 @@
     state: started
     restart: no
     restart_policy : always
-    ports:
-      - "{{ ldap_port_bind }}:1389"
+    comparisons:
+      published_ports: strict
+    ports: "{{ ldap_ports}}"
     volumes:
       - "{{ ldap_data_path }}:/bitnami/openldap:rw"
     env:

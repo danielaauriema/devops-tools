@@ -3,12 +3,11 @@
   hosts: server
   become: true
   gather_facts: no
-  vars:
-    stdout_callback: oneline
   roles:
     - role: setup/ufw
     - role: setup/bind9
       tags: dns_server
+      bind9_server_addr: "172.16.20.1"
     - role: setup/docker
 
     # install wireguard
@@ -27,7 +26,9 @@
 
     # database tools
     - role: docker/postgres
+      tags: postgres
     - role: docker/pgadmin
+      tags: pgadmin
 
     - role: ssl/copy
       ssl_cert_subdomain_name: _
@@ -35,6 +36,7 @@
 
     # install gitea
     - role: postgres/add_db
+      tags: gitea
       pg_db_name: "gitea"
       pg_db_user: "gitea"
       pg_db_password: "password"
@@ -42,6 +44,7 @@
       pg_login_user: "admin"
       pg_login_password: "password"      
     - role: docker/gitea
+      tags: [ gitea, gitea_install ] 
 
     - role: docker/nginx/config
       tags: [ nginx, nginx_config ]
@@ -55,7 +58,7 @@
         - nginx_site: "gitea"
           nginx_proxy_pass: http://gitea:3000/
           nginx_server_name: gitea.devops-tools.local
-        - nginx_site: "grub1"
+        - nginx_site: "grub2"
           nginx_proxy_pass: http://gitea:3000/
           nginx_server_name: gitea.devops-tools.local
 

@@ -3,6 +3,8 @@
   hosts: server
   become: true
   gather_facts: no
+  vars:
+    stdout_callback: oneline
   roles:
     - role: setup/ufw
     - role: setup/bind9
@@ -10,7 +12,8 @@
     - role: setup/docker
 
     # install wireguard
-    - role: wireguard/server  
+    - role: wireguard/server 
+      tags: vpn 
 
     # install nginx/reverse-proxy
     - role: docker/nginx/up
@@ -50,6 +53,9 @@
           nginx_proxy_pass: http://pgadmin/
           nginx_server_name: pgadmin.devops-tools.local
         - nginx_site: "gitea"
+          nginx_proxy_pass: http://gitea:3000/
+          nginx_server_name: gitea.devops-tools.local
+        - nginx_site: "grub1"
           nginx_proxy_pass: http://gitea:3000/
           nginx_server_name: gitea.devops-tools.local
 

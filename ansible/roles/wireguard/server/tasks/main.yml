@@ -14,7 +14,7 @@
 - name: Copy config file
   copy:
     src: "{{ wg_server_conf_file }}"
-    dest: "{{ wg_remote_conf_path }}"
+    dest: "/etc/wireguard"
   register: wg_copy_info   
 
 - name: Start service
@@ -38,4 +38,4 @@
     proto: udp
     direction: "in"
     comment: "WG/{{ wg_network_name}}"
-    to_ip: "{{ ansible_host }}"
+    to_ip: "{{ wg_server_addr }}"

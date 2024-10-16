@@ -19,5 +19,3 @@ wg_server_conf_path: "{{ wg_conf_path }}/servers"
 wg_server_yaml_file: "{{ wg_yaml_path }}/{{ wg_network_name }}.yaml"
 wg_server_conf_file: "{{ wg_server_conf_path }}/{{ wg_network_name }}.conf"
 
-wg_remote_conf_path: "/etc/wireguard"
-

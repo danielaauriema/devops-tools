@@ -31,6 +31,7 @@
   copy:
     src: "ping.html"
     dest: "{{ nginx_sites_path }}/ping/index.html"
+  notify: "docker/nginx/restart"
 
 - import_role: 
     name: docker/nginx/config

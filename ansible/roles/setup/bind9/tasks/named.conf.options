@@ -28,6 +28,8 @@ options {
         //========================================================================
         dnssec-validation auto;
 
+        listen-on { {{ bind9_server_addr }}; };
+
         listen-on-v6 { none; };
         //listen-on-v6 { any; };
 

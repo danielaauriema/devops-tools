@@ -1,6 +1,6 @@
 ---
 - name: "Copy domain_data_file"
-  ansible.builtin.template:
+  template:
     src: "templates/domain_data_file.j2"
     dest: "{{ bind9_path }}/db.{{ bind9_ns_domain }}"
   notify: bind/restart

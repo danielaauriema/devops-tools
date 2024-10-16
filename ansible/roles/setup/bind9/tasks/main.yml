@@ -5,7 +5,7 @@
     update_cache: no
   
 - name: Copy named.conf.options
-  copy:
+  template:
     src: "named.conf.options"
     dest: "{{ bind9_path }}"
   notify: bind/restart
@@ -22,5 +22,5 @@
   ufw:
     rule: allow
     name: Bind9
-    to_ip: "{{ bind9_ufw_addr }}" 
+    to_ip: "{{ bind9_server_addr }}" 
     comment: Bind/DNS  

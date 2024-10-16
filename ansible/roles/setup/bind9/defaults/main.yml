@@ -1,7 +1,6 @@
 ---
-bind9_ns_addr: "{{ ansible_host }}"
+bind9_server_addr: "{{ ansible_host }}"
 bind9_ns_domain: "devops-tools.local"
 bind9_path: "/etc/bind"
-bind9_ufw_addr: "any"
 bind9_subdomains: 
-  - { name: "*", addr: "{{ bind9_ns_addr }}" }
+  - { name: "*", addr: "{{ ansible_host }}" }

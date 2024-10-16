@@ -4,11 +4,9 @@
   become: true
   gather_facts: no
   roles:
-    # # server setup
-    # - role: core/init
-    
     - role: setup/ufw
     - role: setup/bind9
+      tags: dns_server
     - role: setup/docker
 
     # install wireguard

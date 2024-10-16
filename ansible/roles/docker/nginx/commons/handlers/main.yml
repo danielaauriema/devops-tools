@@ -1,6 +1,4 @@
 ---
-- name: docker/nginx/restart
-  docker_container:
-    name: nginx
-    state: started
-    restart: true
+- name:  docker/nginx/restart
+  include_tasks: restart.yml
+

@@ -4,6 +4,6 @@
     nginx_site: "{{ item.nginx_site }}"
     nginx_proxy_pass: "{{ item.nginx_proxy_pass }}"
     nginx_server_name: "{{ item.nginx_server_name }}"
-  loop: "{{ nginx_sites }}"
+  loop: "{{ nginx_config }}"
 
 - meta: flush_handlers

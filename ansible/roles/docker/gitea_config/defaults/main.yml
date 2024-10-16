@@ -1,3 +1,11 @@
 gitea_admin_user: "gitea"
 gitea_admin_password: "password"
 gitea_admin_email: "gitea@devops-tools.local"
+
+gitea_ldap_host: "{{ ansible_host }}"
+gitea_ldap_port: 389
+gitea_ldap_security_protocol: "unencrypted"
+gitea_ldap_user_search_base: "ou=people,dc=devops-tools,dc=local" 
+
+gitea_ldap_bind_dn: "cn=admin,dc=devops-tools,dc=local" 
+gitea_ldap_bind_password: "password"

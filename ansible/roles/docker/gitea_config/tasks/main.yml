@@ -1,23 +1,25 @@
 ---
 - name: set admin user
   set_fact:
+    gitea_user_exists: "/bin/bash -c \"gitea admin user list | awk -F' ' '{ print $2 }' | grep -E ^{{ gitea_admin_user }}$\""
     gitea_add_user_cmd: > 
       gitea admin user create 
       --username {{ gitea_admin_user }} 
       --password {{ gitea_admin_password }} 
       --email {{ gitea_admin_email }} 
-      --admin -c /data/gitea/conf/app.ini"
+      --admin -c /data/gitea/conf/app.ini
+    gitea_auth_exists: "/bin/bash -c \"gitea admin auth list |  awk -F' ' '{ print $2 }' | grep -E ^ldap$\""
     gitea_add_ldap: > 
       gitea admin auth add-ldap 
       --name ldap 
-      --security-protocol unencrypted 
-      --host ldap 
-      --port 1389
+      --security-protocol {{ gitea_ldap_security_protocol }} 
+      --host {{ gitea_ldap_host }} 
+      --port {{ gitea_ldap_port }}
       --user-search-base 'ou=people,dc=devops-tools,dc=local' 
       --user-filter '(&(objectClass=posixAccount)(uid=%s))' 
       --email-attribute mail 
-      --bind-dn 'cn=admin,dc=devops-tools,dc=local' 
-      --bind-password 'password'
+      --bind-dn {{ gitea_ldap_bind_dn }} 
+      --bind-password {{ gitea_ldap_bind_password }}
       --skip-tls-verify 
 
 - name: "wait for HTTP"
@@ -30,16 +32,35 @@
   retries: 120
   delay: 5
 
-- name: Run add user
+- name: "Check if user exists"
+  community.docker.docker_container_exec:
+    container: gitea
+    user: git
+    command: "{{ gitea_user_exists }}"
+  register: gitea_user_exists_result
+  ignore_errors: true
+  changed_when: false
+
+- name: "Add admin user"
   community.docker.docker_container_exec:
     container: gitea
     user: git
     command: "{{ gitea_add_user_cmd }}"
-  ignore_errors: true
+  when: gitea_user_exists_result.rc == 1
 
-- name: Run add ldap
+- name: "Check if ldap config exists"
+  community.docker.docker_container_exec:
+    container: gitea
+    user: git
+    command: "{{ gitea_auth_exists }}"
+  register: gitea_auth_exists_result
+  ignore_errors: true
+  changed_when: false
+
+- name: "Add ldap config"
   community.docker.docker_container_exec:
     container: gitea
     user: git
     command: "{{ gitea_add_ldap }}"
-  ignore_errors: true
+  when: gitea_auth_exists_result.rc == 1
+

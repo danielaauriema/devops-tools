@@ -4,8 +4,8 @@
   become: true
   gather_facts: no
   roles:
-    # server setup
-    - role: core/init
+    # # server setup
+    # - role: core/init
     
     - role: setup/ufw
     - role: setup/bind9
@@ -16,10 +16,13 @@
 
     # install nginx/reverse-proxy
     - role: docker/nginx/up
+      tags: nginx
 
     # ldap tools
     - role: docker/ldap
+      tags: ldap
     - role: docker/lam
+      tags: [ ldap, lam ]
 
     # database tools
     - role: docker/postgres
@@ -40,7 +43,8 @@
     - role: docker/gitea
 
     - role: docker/nginx/config
-      nginx_sites:
+      tags: [ nginx, nginx_config ]
+      nginx_config:
         - nginx_site: ldap
           nginx_proxy_pass: http://lam/
           nginx_server_name: ldap.devops-tools.local
@@ -52,3 +56,4 @@
           nginx_server_name: gitea.devops-tools.local
 
     - role: docker/gitea_config
+      tags: [ gitea, gitea_config ]

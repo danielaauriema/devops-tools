@@ -4,15 +4,8 @@
   become: true
   gather_facts: no
   roles:
-    # -role: core/common
     - role: core/base_server
     
-    # - role: wireguard/server 
-    #   tags: vpn     
-    # - role: setup/bind9
-    #   tags: dns_server
-    #   bind9_server_addr: "{{ core.server_internal_addr }}"
-
     # - role: docker/nginx/up
     #   tags: nginx
 

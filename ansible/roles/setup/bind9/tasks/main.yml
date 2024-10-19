@@ -1,7 +1,4 @@
 ---
-- debug:
-    var: wg_vpn
-
 - name: Install bind
   apt: 
     name: bind9=1:9.18.28-1~deb12u2

@@ -16,3 +16,5 @@ lam_admin_password: "password"
 lam_organization_name: "LDAP Account Manager Demo"
 lam_network: "devops-tools"
 
+lam_data_path: /data/lam
+

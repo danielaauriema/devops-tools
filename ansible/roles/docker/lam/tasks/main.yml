@@ -9,6 +9,8 @@
     comparisons:
       published_ports: strict
     ports: "{{ lam_port_bind }}"
+    volumes:
+      - "{{ lam_data_path }}/etc:/etc/ldap-account-manager"
     env:
       LAM_SKIP_PRECONFIGURE: "false"
       LDAP_DOMAIN: "{{ ldap_base_dn }}"

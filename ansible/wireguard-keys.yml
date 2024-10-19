@@ -1,12 +1,7 @@
 ---
-- name: DevOps Tools Setup
+- name: DevOps Tools generate vpn config
   hosts: localhost  
   become: true
   gather_facts: no
   roles:
-    # generate wireguard config  
-    - role: wireguard/init
     - role: wireguard/config
-      wg_clients:
-        home_pc: 2
-        mobile: 3

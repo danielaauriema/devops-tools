@@ -1,5 +1,5 @@
 ---
 allow_duplicates: true
 dependencies:
-  - role: init
+  - role: common
 

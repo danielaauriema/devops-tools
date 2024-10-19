@@ -4,63 +4,58 @@
   become: true
   gather_facts: no
   roles:
-    - role: setup/ufw
-    - role: setup/bind9
-      tags: dns_server
-      bind9_server_addr: "172.16.20.1"
-    - role: setup/docker
+    # -role: core/common
+    - role: core/base_server
+    
+    # - role: wireguard/server 
+    #   tags: vpn     
+    # - role: setup/bind9
+    #   tags: dns_server
+    #   bind9_server_addr: "{{ core.server_internal_addr }}"
 
-    # install wireguard
-    - role: wireguard/server 
-      tags: vpn 
+    # - role: docker/nginx/up
+    #   tags: nginx
 
-    # install nginx/reverse-proxy
-    - role: docker/nginx/up
-      tags: nginx
+    # # ldap tools
+    # - role: docker/ldap
+    #   tags: ldap
+    # - role: docker/lam
+    #   tags: [ ldap, lam ]
 
-    # ldap tools
-    - role: docker/ldap
-      tags: ldap
-    - role: docker/lam
-      tags: [ ldap, lam ]
+    # # database tools
+    # - role: docker/postgres
+    #   tags: postgres
+    # - role: docker/pgadmin
+    #   tags: pgadmin
 
-    # database tools
-    - role: docker/postgres
-      tags: postgres
-    - role: docker/pgadmin
-      tags: pgadmin
+    # - role: ssl/copy
+    #   ssl_cert_subdomain_name: _
+    #   ssl_cert_common_name: "*.devops.auriema.net"    
 
-    - role: ssl/copy
-      ssl_cert_subdomain_name: _
-      ssl_cert_common_name: "*.devops-tools.local"    
+    # # # install gitea
+    # # - role: postgres/add_db
+    # #   tags: gitea
+    # #   pg_db_name: "gitea"
+    # #   pg_db_user: "gitea"
+    # #   pg_db_password: "password"
+    # #   pg_login_host: "{{ ansible_host }}"
+    # #   pg_login_user: "admin"
+    # #   pg_login_password: "password"      
+    # # - role: docker/gitea
+    # #   tags: [ gitea, gitea_install ] 
 
-    # install gitea
-    - role: postgres/add_db
-      tags: gitea
-      pg_db_name: "gitea"
-      pg_db_user: "gitea"
-      pg_db_password: "password"
-      pg_login_host: "{{ ansible_host }}"
-      pg_login_user: "admin"
-      pg_login_password: "password"      
-    - role: docker/gitea
-      tags: [ gitea, gitea_install ] 
+    # - role: docker/nginx/config
+    #   tags: [ nginx, nginx_config ]
+    #   nginx_config:
+    #     - nginx_site: ldap
+    #       nginx_proxy_pass: http://lam/
+    #       nginx_server_name: ldap.devops-tools.local
+    #     - nginx_site: pgadmin
+    #       nginx_proxy_pass: http://pgadmin/
+    #       nginx_server_name: pgadmin.devops-tools.local
+    #     # - nginx_site: "gitea"
+    #     #   nginx_proxy_pass: http://gitea:3000/
+    #     #   nginx_server_name: gitea.devops-tools.local
 
-    - role: docker/nginx/config
-      tags: [ nginx, nginx_config ]
-      nginx_config:
-        - nginx_site: ldap
-          nginx_proxy_pass: http://lam/
-          nginx_server_name: ldap.devops-tools.local
-        - nginx_site: pgadmin
-          nginx_proxy_pass: http://pgadmin/
-          nginx_server_name: pgadmin.devops-tools.local
-        - nginx_site: "gitea"
-          nginx_proxy_pass: http://gitea:3000/
-          nginx_server_name: gitea.devops-tools.local
-        - nginx_site: "grub2"
-          nginx_proxy_pass: http://gitea:3000/
-          nginx_server_name: gitea.devops-tools.local
-
-    - role: docker/gitea_config
-      tags: [ gitea, gitea_config ]
+    # # - role: docker/gitea_config
+    # #   tags: [ gitea, gitea_config ]

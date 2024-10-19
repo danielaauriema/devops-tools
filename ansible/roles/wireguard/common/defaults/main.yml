@@ -2,7 +2,7 @@
 wg_network_prefix: "172.16.20"
 wg_network_name: wg_vpn
 
-wg_server_addr: "{{ hostvars['server'].ansible_host }}"
+wg_server_addr: "{{ ansible_host }}"
 wg_server_port: 51820
 wg_server_intf_name: "{{ wg_network_name }}"
 wg_server_internal_addr: "{{ wg_network_prefix }}.1"
@@ -18,4 +18,8 @@ wg_conf_path: "{{ wg_data_path }}/conf"
 wg_server_conf_path: "{{ wg_conf_path }}/servers"
 wg_server_yaml_file: "{{ wg_yaml_path }}/{{ wg_network_name }}.yaml"
 wg_server_conf_file: "{{ wg_server_conf_path }}/{{ wg_network_name }}.conf"
+
+wg_clients:
+  home_pc: 2
+  mobile: 3
 

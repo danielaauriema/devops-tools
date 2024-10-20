@@ -14,13 +14,13 @@
     - "{{ nginx_http_port_bind }}:80"
     - "{{ nginx_https_port_bind }}:443"
     volumes:
-      - "{{ nginx_data_path }}/templates:/etc/nginx/templates"
-      - "{{ nginx_data_path }}/conf.d:/etc/nginx/conf.d"
-      - "{{ nginx_data_path }}/www:/var/www/"
-      - "{{ nginx_certs_path }}:/data/ssl/certs/"
+    - "{{ nginx_data_path }}/templates:/etc/nginx/templates"
+    - "{{ nginx_data_path }}/conf.d:/etc/nginx/conf.d"
+    - "{{ nginx_data_path }}/www:/var/www/"
+    - "{{ nginx_certs_path }}:/data/ssl/certs/"
     network_mode: bridge
     networks:
-      - name: "{{ nginx_network }}"
+    - name: "{{ nginx_network }}"
 
 - name: Create ping directory
   file:

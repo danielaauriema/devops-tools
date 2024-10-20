@@ -1,0 +1,7 @@
+---
+- import_role: 
+    name: docker/postgres
+  tags: postgres
+- import_role: 
+    name: docker/pgadmin
+  tags: pgadmin

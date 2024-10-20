@@ -9,7 +9,7 @@ ldap_bind_password: "password"
 ldap_addr: "{{ ansible_host }}"
 ldap_server_uri: "ldap://{{ ldap_addr }}:{{ ldap_port }}"
 
-# default LAM port is 80
+# LAM default port: 80
 lam_port_bind: []
 lam_password: "password"
 lam_admin_password: "password"

@@ -1,0 +1,7 @@
+---
+- import_role: 
+    name: docker/ldap
+  tags: ldap
+- import_role: 
+    name: docker/lam
+  tags: [ ldap, lam ]

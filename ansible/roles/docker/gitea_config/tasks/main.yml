@@ -27,8 +27,8 @@
     url: "https://gitea.devops-tools.local/"
     status_code: 200
     validate_certs: false
-  register: result
-  until: result.status == 200
+  register: gitea_result
+  until: gitea_result.status == 200
   retries: 120
   delay: 5
 

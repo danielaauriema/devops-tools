@@ -1,0 +1,15 @@
+---
+- import_role:
+    name: setup/ufw
+- import_role: 
+    name: setup/docker
+- import_role: 
+    name: wireguard/server 
+  tags: vpn     
+- import_role: 
+    name: setup/bind9
+  tags: dns_server
+- import_role: 
+    name: docker/nginx/up
+  tags: nginx
+

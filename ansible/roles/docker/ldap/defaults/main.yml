@@ -10,6 +10,8 @@ ldap_user_password: "password"
 ldap_user_description: "DevOps Tools User"
 
 ldap_port: "1389"
+ldap_internal_port: "1389"
+
 ldap_port_bind: "{{ ldap_port }}"
 ldap_data_path: "/data/openldap"
 ldap_network: "devops-tools"
@@ -17,5 +19,5 @@ ldap_addr: "{{ ansible_host }}"
 ldap_server_uri: "ldap://{{ ldap_addr }}:{{ ldap_port }}"
 
 ldap_ports:
-  - "{{ ldap_addr }}:{{ ldap_port }}:1389"
+  - "{{ ldap_addr }}:{{ ldap_port }}:{{ ldap_internal_port }}"
   - "{{ ldap_addr }}:1636:1636"

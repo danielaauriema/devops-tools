@@ -1,0 +1,25 @@
+---
+- name: Create remote data dir
+  ansible.builtin.file:
+    path: "{{ pgadmin_data_path }}"
+    state: directory
+    mode: 0775
+
+- name: Create dpage/pgadmin4 container
+  docker_container:
+    name: "pgadmin"
+    image: "dpage/pgadmin4"
+    state: started
+    restart: no
+    restart_policy : always
+    comparisons:
+      published_ports: strict      
+    ports: "{{ pgadmin_port_binds }}"
+    volumes:
+      - "{{ pgadmin_data_path }}:/var/lib/pgadmin:rw"  
+    env:
+      PGADMIN_DEFAULT_EMAIL: "{{ pgadmin_default_email }}"
+      PGADMIN_DEFAULT_PASSWORD: "{{ pgadmin_default_password }}"
+    network_mode: bridge
+    networks:
+      - name: "{{ pgadmin_network }}"

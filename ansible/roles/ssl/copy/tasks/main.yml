@@ -1,0 +1,4 @@
+---  
+- import_role:
+    name: ssl/generate_cert
+    tasks_from : copy

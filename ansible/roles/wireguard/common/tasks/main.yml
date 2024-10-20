@@ -1,0 +1,7 @@
+---
+- name: Install wireguard
+  apt: 
+    package: 
+      - wireguard
+      # - resolvconf
+    update_cache: "no"

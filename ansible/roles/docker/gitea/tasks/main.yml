@@ -1,0 +1,44 @@
+---
+- name: Create remote data dir
+  ansible.builtin.file:
+    path: "{{ gitea_data_path }}"
+    state: directory
+    mode: 0775
+
+- name: Create gitea container
+  docker_container:
+    name: "gitea"
+    image: "gitea/gitea:1.22.2"
+    state: started
+    restart: no
+    restart_policy : always
+    comparisons:
+      published_ports: strict      
+    ports: "{{ gitea_port_binds }}"
+    volumes:
+      - /data/gitea:/data
+      - /etc/timezone:/etc/timezone:ro 
+      - /etc/localtime:/etc/localtime:ro 
+    env:
+      # database config/bitnami
+      GITEA__database__DB_TYPE: "postgres"
+      GITEA__database__HOST: "{{ gitea_db_host }}"
+      GITEA__database__NAME: "{{ gitea_db_name }}"
+      GITEA__database__USER: "{{ gitea_db_user }}"
+      GITEA__database__PASSWD: "{{ gitea_db_password }}"
+      GITEA__APP_NAME: "{{ gitea_app_name }}"
+      # gitea config
+      GITEA____RUN_MODE: "dev"
+      GITEA____APP_NAME: "{{ gitea_app_name }}"
+      GITEA__log__LEVEL: "Debug"
+      GITEA__security__INSTALL_LOCK: "true"
+      GITEA__service__DISABLE_REGISTRATION: "true"
+      GITEA__server__SSH_PORT: "{{ gitea_ssh_port }}"
+      GITEA__server__SSH_LISTEN_PORT: "22"
+      GITEA__server__DOMAIN: "{{ gitea_domain }}"
+      GITEA__server__ROOT_URL: "{{ gitea_root_url }}" 
+      GITEA__repository__DEFAULT_BRANCH: "master"
+    network_mode: bridge
+    networks:
+      - name: "{{ gitea_network }}"
+

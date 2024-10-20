@@ -1,0 +1,20 @@
+---
+- import_role: 
+    name: postgres/add_db
+  tags: gitea
+  vars:
+    pg_db_name: "{{ gitea_db_name }}"
+    pg_db_user: "{{ gitea_db_user }}"
+    pg_db_password: "{{ gitea_db_password }}"
+    pg_login_host: "{{ core_server_internal_addr }}"
+    pg_login_user: "{{ gitea_db_admin_user }}"
+    pg_login_password: "{{ gitea_db_admin_password }}"      
+
+- import_role: 
+    name: docker/gitea
+  tags: gitea, gitea_install
+
+- import_role: 
+    name: docker/gitea_config
+  tags: gitea, gitea_config 
+

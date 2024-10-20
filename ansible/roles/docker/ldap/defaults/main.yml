@@ -1,7 +1,24 @@
 ---
-ldap_root: "dc=devops-tools,dc=local"
+ldap_base_dn: "dc=devops-tools,dc=local"
 ldap_admin_username: "admin"
 ldap_admin_password: "password"
-ldap_base: "{{ ldap_root }}"
-ldap_bind_dn: "cn=admin,{{ ldap_root }}" 
-ldap_bind_password: "password"      
+ldap_admin_dn: "cn={{ ldap_admin_username }},{{ ldap_base_dn }}"
+ldap_bind_dn: "cn=bind,{{ ldap_base_dn }}" 
+ldap_bind_password: "password" 
+
+ldap_user_id: "devops"
+ldap_user_password: "password"
+ldap_user_description: "DevOps Tools User"
+
+ldap_port: "1389"
+ldap_internal_port: "1389"
+
+ldap_port_bind: "{{ ldap_port }}"
+ldap_data_path: "/data/openldap"
+ldap_network: "devops-tools"
+ldap_addr: "{{ ansible_host }}"
+ldap_server_uri: "ldap://{{ ldap_addr }}:{{ ldap_port }}"
+
+ldap_ports:
+  - "{{ ldap_addr }}:{{ ldap_port }}:{{ ldap_internal_port }}"
+  - "{{ ldap_addr }}:1636:1636"

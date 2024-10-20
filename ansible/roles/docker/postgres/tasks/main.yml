@@ -1,4 +1,10 @@
 ---
+- name: Install python-dev/psycopg2
+  apt: 
+    package: 
+      - python3-psycopg2
+    update_cache: no
+
 - name: Create postgres container
   docker_container:
     name: "postgres"
@@ -6,13 +12,17 @@
     state: started
     restart: no
     restart_policy : always
+    comparisons:
+      published_ports: strict      
+    ports: "{{ postgres_port_bind }}"
     volumes:
-      - "{{ postgres_local_data}}:{{ postgres_data }}"
+      - "{{ postgres_data_path }}:/data/postgres"
     env:
         POSTGRES_DB: "{{ postgres_db }}"
         POSTGRES_USER: "{{ postgres_user }}"
         POSTGRES_PASSWORD: "{{ postgres_password }}"
-        PGDATA: "{{ postgres_data }}"
+        PGDATA: "/data/postgres"
     network_mode: bridge
     networks:
-      - name: "{{ core_docker_network }}"
+      - name: "{{ postgres_network }}"
+

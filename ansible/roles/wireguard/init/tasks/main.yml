@@ -1,5 +1,0 @@
----
-- name: Set default wg_server_external_addr
-  set_fact:
-    wg_server_external_addr: "{{ ansible_host }}"
-  when: wg_server_external_addr is undefined

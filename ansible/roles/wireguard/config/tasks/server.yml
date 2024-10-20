@@ -1,51 +1,29 @@
 ---
-- block:
+- name: Create server private key
+  shell: wg genkey
+  register: wg_server_pvt_result
+  args:
+    creates: "{{ wg_server_yaml_file }}"
 
-  - name: Create server private key
-    shell: wg genkey
-    register: server_pvt_result
-    delegate_to: localhost
-    args:
-      creates: "{{ wg_server_data_file }}"
+- name: Create server public key
+  shell: "echo {{ wg_server_pvt_result.stdout }} | wg pubkey"
+  register: wg_server_pub_result
+  args:
+    creates: "{{ wg_server_yaml_file }}"
 
-  - name: Create server public key
-    shell: "echo {{ server_pvt_result.stdout }} | wg pubkey"
-    register: server_pub_result
-    delegate_to: localhost
-    args:
-      creates: "{{ wg_server_data_file }}"
+- name: Write server yaml file
+  template:
+    src: templates/server_yaml.j2
+    dest: "{{ wg_server_yaml_file }}"
+  when: wg_server_pub_result.changed
 
-  - name: Set server keys
-    set_fact:
-      wg_server_pvt_key: "{{ server_pvt_result.stdout }}"
-      wg_server_pub_key: "{{ server_pub_result.stdout }}"
-    when: server_pub_result.changed
-
-  - name: Write server data file
-    ansible.builtin.template:
-      src: templates/server_data.j2
-      dest: "{{ wg_server_data_file }}"
-    delegate_to: localhost
-    when: server_pub_result.changed
-    changed_when: false
-
-- block:
-
-  - name: Include server vars from config file
-    ansible.builtin.include_vars:
-      file: "{{ wg_server_data_file }}"
-      name: wg_server_keys
-    when: not server_pub_result.changed
-
-  - name: Set server keys from file
-    set_fact:
-      wg_server_pvt_key: "{{ wg_server_keys.server_pvt_key }}"
-      wg_server_pub_key: "{{ wg_server_keys.server_pub_key }}"
-    when: not server_pub_result.changed
+- name: Include server vars from config file
+  include_vars:
+    file: "{{ wg_server_yaml_file }}"
+    name: wg_server_keys
 
 - name: Write server config file
-  ansible.builtin.template:
+  template:
     src: templates/server_intf.j2
-    dest: "{{ wg_local_conf_path }}/server.conf"
-  delegate_to: localhost
+    dest: "{{ wg_server_conf_file }}"
   changed_when: false

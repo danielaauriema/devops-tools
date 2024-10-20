@@ -1,0 +1,23 @@
+---
+core_network_prefix: "172.16.20"
+core_server_internal_addr: "{{ core_network_prefix }}.1"
+
+# wireguard config
+wg_internal_addr: "{{ core_server_internal_addr }}"
+wg_server_addr: "{{ hostvars['server']['ansible_host'] }}"
+
+# bind config
+bind9_server_addr: "{{ core_server_internal_addr }}"
+bind9_subdomains: 
+  - { name: "*", addr: "{{ core_server_internal_addr }}" }
+
+# nginx config
+nginx_server_addr: "{{ core_server_internal_addr }}"
+
+# ldap config
+ldap_addr: "{{ core_server_internal_addr }}"
+ldap_external_server_uri: "ldap://{{ ldap_addr }}:{{ ldap_port }}"
+ldap_internal_server_uri: "ldap://ldap:{{ ldap_internal_port }}"
+
+# postgres config
+postgres_addr: "{{ core_server_internal_addr }}"

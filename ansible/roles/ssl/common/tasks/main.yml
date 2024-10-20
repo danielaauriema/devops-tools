@@ -1,0 +1,14 @@
+---
+- name: Install open ssl
+  apt: 
+    pkg: openssl
+    update-cache: no
+
+- name: Create ssl directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0775"
+  loop:
+    - "{{ ssl_ca_root_path }}"
+    - "{{ ssl_ca_certs_path }}"

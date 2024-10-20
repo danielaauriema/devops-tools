@@ -4,49 +4,20 @@
   become: true
   gather_facts: no
   roles:
-    - role: core/init
-    - role: setup/ufw
-    - role: setup/bind9
-    - role: bind/config
-      bind_subdomains: 
-        - { name: "*", addr: 172.16.20.1 }
-    - role: wireguard/init
-    - role: wireguard/config
-      wg_clients:
-        home_pc: 2
-        mobile: 3
-    - role: wireguard/server
-    - role: setup/docker
-
-    # generate SSL certificates
-    - role: ssl/generate_ca
-    - role: ssl/generate_cert
-      ssl_cert_subdomain_name: ldap
-    - role: ssl/generate_cert
-      ssl_cert_subdomain_name: pgadmin
-
-    # reverse-proxy
-    - role: docker/nginx/up
-
-    # ldap tools
-    - role: docker/ldap
-    - role: docker/lam
-    - role: docker/nginx/config
-      vars:
-        nginx_site: ldap
-        nginx_template: proxy_https
-        nginx_proxy_pass: http://lam/
-        nginx_server_name: ldap.devops-tools.local
-      nginx_cert_base_name: "ldap.{{ core_base_domain }}"
-
-    # database tools
-    - role: docker/postgres
-    - role: docker/pg_admin
-    - role: docker/nginx/config
-      vars:
-        nginx_site: pgadmin
-        nginx_template: proxy_https
-        nginx_proxy_pass: http://pgadmin/
-        nginx_server_name: pgadmin.devops-tools.local
-      nginx_cert_base_name: "pgadmin.{{ core_base_domain }}"
-
+    - role: core/server
+      tags: core_server
+    - role: core/ldap
+      tags: core_ldap
+    - role: core/database
+      tags: core_database
+    - role: core/gitea
+      tags: core_gitea
+    - role: core/nginx
+      tags: core_nginx
+      nginx_config:
+        - nginx_site: ldap
+          nginx_proxy_pass: http://lam/
+        - nginx_site: pgadmin
+          nginx_proxy_pass: http://pgadmin/
+        - nginx_site: "gitea"
+          nginx_proxy_pass: http://gitea:3000/

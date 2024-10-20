@@ -1,0 +1,9 @@
+---
+- name: "Copy domain_data_file"
+  template:
+    src: "templates/domain_data_file.j2"
+    dest: "{{ bind9_path }}/db.{{ bind9_ns_domain }}"
+  notify: bind/restart
+
+- name: Flush handlers
+  meta: flush_handlers

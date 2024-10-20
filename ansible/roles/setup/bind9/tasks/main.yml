@@ -3,32 +3,25 @@
   apt: 
     name: bind9=1:9.18.28-1~deb12u2
     update_cache: no
-
-- name: Copy config files
-  block:
   
-  - name: Copy named.conf.options
-    copy:
-      src: named.conf.options
-      dest: /etc/bind/
-    notify: bind/restart
+- name: Copy named.conf.options
+  template:
+    src: "named.conf.options"
+    dest: "{{ bind9_path }}"
+  notify: bind/restart
 
-  - name: "Copy named.conf.local"
-    ansible.builtin.template:
-      src: "templates/named.conf.local.j2"
-      dest: "/etc/bind/named.conf.local"
-    notify: bind/restart
-  
-  - name: "Copy domain_data_file"
-    ansible.builtin.template:
-      src: "templates/domain_data_file.j2"
-      dest: "/etc/bind/db.{{ core_base_domain }}"
-    notify: bind/restart
+- name: "Copy named.conf.local"
+  template:
+    src: "templates/named.conf.local.j2"
+    dest: "{{ bind9_path }}/named.conf.local"
+  notify: bind/restart
 
-- name: "UFW allow Bind9'"
+- include_tasks : config.yml
+
+- name: "UFW allow Bind9"
   ufw:
     rule: allow
-    name: Bind9
-    to_ip: "{{ bind9_addr }}" 
+    port: 53
+    direction: "in"
     comment: Bind/DNS  
-  
+    to_ip: "{{ bind9_server_addr }}" 

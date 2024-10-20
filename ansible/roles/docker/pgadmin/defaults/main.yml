@@ -1,0 +1,7 @@
+---
+pgadmin_default_email: "admin@devops-tools.com"
+pgadmin_default_password: "password"
+
+pgadmin_data_path: "/data/pgadmin/data"
+pgadmin_network: "devops-tools"
+pgadmin_port_binds: []

@@ -1,3 +1,3 @@
 ---
-ssl_csr_common_name: "{{ core_common_name }} Self-Signed CA"
-ssl_csr_organization_name: "{{ core_common_name }} Self-Signed Organisation"
+ssl_csr_common_name: "{{ ssl_ca_common_name }} Self-Signed CA"
+ssl_csr_organization_name: "{{ ssl_ca_common_name }} Self-Signed Organisation"

@@ -1,14 +1,20 @@
 ---
-ldap_root: "dc=devops-tools,dc=local"
+ldap_base_dn: "dc=devops-tools,dc=local"
 ldap_admin_username: "admin"
 ldap_admin_password: "password"
-ldap_users: "user01,user02"
-ldap_passwords: "password,password"
-ldap_base: "{{ ldap_root }}"
-ldap_bind_dn: "cn=admin,{{ ldap_root }}" 
+ldap_base: "{{ ldap_base_dn }}"
+ldap_bind_dn: "cn=admin,{{ ldap_base_dc }}" 
 ldap_bind_password: "password"
 
+ldap_addr: "{{ ansible_host }}"
+ldap_server_uri: "ldap://{{ ldap_addr }}:{{ ldap_port }}"
+
+# LAM default port: 80
+lam_port_bind: []
 lam_password: "password"
 lam_admin_password: "password"
-
 lam_organization_name: "LDAP Account Manager Demo"
+lam_network: "devops-tools"
+
+lam_data_path: /data/lam
+

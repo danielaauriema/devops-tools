@@ -1,0 +1,19 @@
+---
+- name: "Apt update cache"
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+- import_role:
+    name: setup/ufw
+- import_role: 
+    name: setup/bind9
+  tags: dns_server
+- import_role: 
+    name: wireguard/server 
+  tags: vpn     
+- import_role: 
+    name: setup/docker
+- name: Create docker network
+  docker_network:
+    name: "{{ docker_network }}"
+

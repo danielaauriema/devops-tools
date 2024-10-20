@@ -1,0 +1,14 @@
+---
+- name: Generate DevOps Tools Certificates
+  hosts: localhost
+  become: true
+  gather_facts: no
+  roles:
+    - role: wireguard/config
+      tags: wireguard
+    - role: ssl/generate_ca
+      tags: ssl,ssl_ca
+    - role: ssl/generate_cert
+      tags: ssl,ssl_certs
+      ssl_cert_subdomain_name: _
+      ssl_cert_common_name: "*.{{ ssl_base_domain }}"

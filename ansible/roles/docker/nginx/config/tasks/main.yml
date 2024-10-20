@@ -1,24 +1,8 @@
 ---
-- name: Set nginx add site params
-  set_fact: 
-    nginx_add_site:
-      port: "{{ nginx_port | default('80') }}"
-      site: "{{ nginx_site }}"
-      template: "{{ nginx_template }}"
-      server_name: "{{ nginx_server_name }}"
-      proxy_pass:  "{{ nginx_proxy_pass | default(none) }}"
+- include_tasks: config.yml
+  vars:
+    nginx_site: "{{ item.nginx_site }}"
+    nginx_proxy_pass: "{{ item.nginx_proxy_pass }}"
+  loop: "{{ nginx_config }}"
 
-- name: set nginx_ssl_base_file
-  set_fact:
-    nginx_ssl_base_file: "{{ core_remote_data_path }}/ssl/certs/{{ nginx_cert_base_name }}"
-
-- name: set private/public ssl keys
-  set_fact:
-    nginx_pvt_key: "{{ nginx_ssl_base_file }}.key"
-    nginx_pub_key: "{{ nginx_ssl_base_file }}.crt"
-
-- name: Copy nginx config
-  template:
-    src: "{{ nginx_add_site.template }}.conf"
-    dest: "{{ nginx_config_path }}/{{ nginx_add_site.site }}.conf"
-  notify: docker/nginx/restart
+- meta: flush_handlers

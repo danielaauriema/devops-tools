@@ -1,0 +1,15 @@
+---
+- import_role: 
+    name: docker/nginx/up
+  tags: nginx
+
+- import_role: 
+    name: ssl/copy
+  tags: nginx, ssl, ssl_certs
+  vars:
+    ssl_cert_subdomain_name: _
+    ssl_cert_common_name: "*.{{ core_base_domain }}"   
+
+- import_role: 
+    name: docker/nginx/config
+  tags: nginx, nginx_config

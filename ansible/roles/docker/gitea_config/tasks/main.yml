@@ -22,13 +22,23 @@
       --bind-password {{ gitea_ldap_bind_password }}
       --skip-tls-verify 
 
-- name: "wait for HTTP"
-  uri:
-    url: "https://gitea.devops-tools.local/"
-    status_code: 200
-    validate_certs: false
+# - name: "wait for HTTP"
+#   uri:
+#     url: "https://gitea.devops-tools.local/"
+#     status_code: 200
+#     validate_certs: false
+#   register: gitea_result
+#   until: gitea_result.status == 200
+#   retries: 120
+#   delay: 5
+
+- name: "Wait form container to start"
+  community.docker.docker_container_exec:
+    container: gitea
+    command: "curl 127.0.0.1:3000"
+  changed_when: false
   register: gitea_result
-  until: gitea_result.status == 200
+  until: gitea_result.rc == 0
   retries: 120
   delay: 5
 
@@ -63,4 +73,3 @@
     user: git
     command: "{{ gitea_add_ldap }}"
   when: gitea_auth_exists_result.rc == 1
-

@@ -12,7 +12,7 @@ gitea_admin_email: "gitea@devops-tools.local"
 
 gitea_app_name: "Gitea :: devops-tools!"
 gitea_domain: "gitea.devops-tools.local"
-gitea_root_url: "https://gitea.devops-tools.local"
+gitea_root_url: "https://{{ gitea_domain }}"
 gitea_data_path: "/data/gitea"
 gitea_network: "devops-tools"
 gitea_log_level: "Debug" # Trace, Debug, Info, Warn, Error, Fatal

@@ -1,4 +1,7 @@
 ---
+- name: "Apt update cache"
+  apt:
+    update_cache: yes
 - import_role:
     name: setup/ufw
 - import_role: 
@@ -9,7 +12,5 @@
 - import_role: 
     name: setup/bind9
   tags: dns_server
-- import_role: 
-    name: docker/nginx/up
-  tags: nginx
+
 

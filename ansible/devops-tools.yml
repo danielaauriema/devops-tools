@@ -10,23 +10,16 @@
       tags: core_ldap
     - role: core/database
       tags: core_database
+    - role: core/gitea
+      tags: core_gitea
 
-    # can remove this!!!
-    # - role: ssl/copy
-    #   ssl_cert_subdomain_name: _
-    #   ssl_cert_common_name: "*.devops.auriema.net"    
+    - role: docker/nginx/up
+      tags: nginx
 
-    # # # install gitea
-    # # - role: postgres/add_db
-    # #   tags: gitea
-    # #   pg_db_name: "gitea"
-    # #   pg_db_user: "gitea"
-    # #   pg_db_password: "password"
-    # #   pg_login_host: "{{ ansible_host }}"
-    # #   pg_login_user: "admin"
-    # #   pg_login_password: "password"      
-    # # - role: docker/gitea
-    # #   tags: gitea, gitea_install 
+    - role: ssl/copy
+      tags: nginx, ssl,ssl_certs
+      ssl_cert_subdomain_name: _
+      ssl_cert_common_name: "*.{{ core_base_domain }}"   
 
     - role: docker/nginx/config
       tags: nginx, nginx_config
@@ -37,10 +30,6 @@
         - nginx_site: pgadmin
           nginx_proxy_pass: http://pgadmin/
           nginx_server_name: "pgadmin.{{ core_base_domain }}"
-          
-    #     # - nginx_site: "gitea"
-    #     #   nginx_proxy_pass: http://gitea:3000/
-    #     #   nginx_server_name: gitea.devops-tools.local
-
-    # # - role: docker/gitea_config
-    # #   tags: [ gitea, gitea_config ]
+        - nginx_site: "gitea"
+          nginx_proxy_pass: http://gitea:3000/
+          nginx_server_name: "gitea.{{ core_base_domain }}"

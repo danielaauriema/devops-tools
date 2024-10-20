@@ -11,4 +11,4 @@
     - role: ssl/generate_cert
       tags: ssl,ssl_certs
       ssl_cert_subdomain_name: _
-      ssl_cert_common_name: "*.{{ core_base_domain }}"
+      ssl_cert_common_name: "*.{{ ssl_base_domain }}"

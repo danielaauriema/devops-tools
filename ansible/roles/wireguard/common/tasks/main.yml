@@ -3,5 +3,5 @@
   apt: 
     package: 
       - wireguard
-      - resolvconf
+      # - resolvconf
     update_cache: "no"

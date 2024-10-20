@@ -2,7 +2,8 @@
 ldap_base_dn: "dc=devops-tools,dc=local"
 ldap_admin_username: "admin"
 ldap_admin_password: "password"
-ldap_bind_dn: "cn=admin,{{ ldap_base_dn }}" 
+ldap_admin_dn: "cn={{ ldap_admin_username }},{{ ldap_base_dn }}"
+ldap_bind_dn: "cn=bind,{{ ldap_base_dn }}" 
 ldap_bind_password: "password" 
 
 ldap_user_id: "devops"

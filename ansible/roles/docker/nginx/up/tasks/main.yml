@@ -1,8 +1,4 @@
 ---
-- name: Create docker network
-  docker_network:
-    name: "{{ nginx_network }}"
-
 - name: Create nginx container
   docker_container:
     name: "nginx"

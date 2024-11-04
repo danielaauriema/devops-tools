@@ -1,0 +1,36 @@
+---
+- name: "Generate gitea runner token"
+  community.docker.docker_container_exec:
+    container: gitea
+    user: git
+    command: "gitea actions generate-runner-token"
+  changed_when: false
+  register: gitea__result
+
+- name: Create gitea runner container
+  docker_container:
+    name: "gitea_runner"
+    image: "gitea/act_runner:latest"
+    state: started
+    restart: no
+    restart_policy : always
+    comparisons:
+      published_ports: strict      
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock 
+    env:
+      GITEA_INSTANCE_URL: "http://{{ gitea__host }}:{{ gitea__http_port }}"
+      GITEA_RUNNER_REGISTRATION_TOKEN: "{{ gitea__result.stdout }}"
+      GITEA_RUNNER_NAME: devops-tools
+      GITEA_RUNNER_LABELS: devops-tools     
+    network_mode: bridge
+    networks:
+      - name: "{{ gitea__network }}"
+
+- name: "Install nodejs"
+  community.docker.docker_container_exec:
+    container: gitea_runner
+    command: "apk add --no-cache nodejs"
+      
+
+

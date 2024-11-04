@@ -1,7 +1,7 @@
 ---
-pg_db_name: "new_db"
-pg_db_user: "new_user"
-pg_db_password: "password"
-pg_login_host: "{{ ansible_host }}"
-pg_login_user: "admin"
-pg_login_password: "password"
+pg__db_name: "new_db"
+pg__db_user: "new_user"
+pg__db_password: "password"
+pg__login_host: "{{ ansible_host }}"
+pg__login_user: "admin"
+pg__login_password: "password"

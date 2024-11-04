@@ -1,5 +1,5 @@
 ---
 - name: "bind/restart"
-  systemd:
+  service:
+    name: named
     state: restarted
-    name: "bind9"

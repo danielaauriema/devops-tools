@@ -5,37 +5,38 @@
     regexp: '^#net.ipv4.ip_forward=1'
     replace: 'net.ipv4.ip_forward=1'
     backup: no
-  register: wg_ipv4fw_info
+  register: wg__ipv4fw_reg
 
 - name: Restart sysctl
   command: sysctl -p /etc/sysctl.conf 
-  when: wg_ipv4fw_info.changed
+  when: wg__ipv4fw_reg.changed
 
 - name: Copy config file
   copy:
-    src: "{{ wg_server_conf_file }}"
+    src: "{{ wg__server_conf_file }}"
     dest: "/etc/wireguard"
-  register: wg_copy_info   
+  register: wg__copy_reg   
 
 - name: Start service
-  systemd:
+  service:
     state: started
-    name: "wg-quick@{{ wg_network_name }}"
+    name: "wg-quick@{{ wg__network_name }}"
     enabled: true
-  register: wg_start_info  
+  register: wg__start_reg
 
 - name: Restart service
-  systemd:
+  service:
     state: restarted
-    name: "wg-quick@{{ wg_network_name }}"
+    name: "wg-quick@{{ wg__network_name }}"
     enabled: true
-  when: wg_copy_info.changed and not wg_start_info.changed
+  when: wg__copy_reg.changed and not wg__start_reg.changed
 
 - name: "UFW allow wireguard'"
   ufw:
     rule: "limit"
-    port: "{{ wg_server_port }}"
+    port: "{{ wg__server_port }}"
     proto: udp
     direction: "in"
-    comment: "WG/{{ wg_network_name}}"
-    to_ip: "{{ wg_server_addr }}"
+    comment: "WG/{{ wg__network_name}}"
+    to_ip: "{{ wg__server_addr }}"
+  when: core__ufw | default(true)

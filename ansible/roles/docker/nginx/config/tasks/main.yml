@@ -1,8 +1,0 @@
----
-- include_tasks: config.yml
-  vars:
-    nginx_site: "{{ item.nginx_site }}"
-    nginx_proxy_pass: "{{ item.nginx_proxy_pass }}"
-  loop: "{{ nginx_config }}"
-
-- meta: flush_handlers

@@ -1,5 +1,0 @@
----
-nginx_template: proxy_https
-nginx_base_domain: "devops-tools.local"
-nginx_cert_base_name: "_.{{ nginx_base_domain }}"
-nginx_server_name: "{{ nginx_site }}.{{ nginx_base_domain }}"

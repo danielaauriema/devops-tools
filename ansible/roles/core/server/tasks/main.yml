@@ -3,17 +3,32 @@
   apt:
     update_cache: yes
     cache_valid_time: 3600
+
 - import_role:
     name: setup/ufw
+  when: core__ufw | default(true)
+
 - import_role: 
     name: setup/bind9
   tags: dns_server
+  vars:
+    bind9__server_addr: "{{ core__server_internal_addr }}"
+    bind9__ns_domain: "{{ core__base_domain }}"
+    bind9__subdomains: 
+      - { name: "*", addr: "{{ core__server_internal_addr }}" }
+
 - import_role: 
     name: wireguard/server 
-  tags: vpn     
-- import_role: 
-    name: setup/docker
-- name: Create docker network
-  docker_network:
-    name: "{{ docker_network }}"
+  tags: vpn   
+  vars:
+    wg__network_prefix: "{{ core__network_prefix }}"
+    wg__server_internal_addr: "{{ core__server_internal_addr }}"
+
+- block:
+  - import_role: 
+      name: setup/docker
+  - name: Create docker network
+    docker_network:
+      name: "{{ core__docker_network }}"
+  tags: docker
 

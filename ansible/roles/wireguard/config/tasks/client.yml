@@ -1,67 +1,66 @@
 ---
 - name: Set client data
   ansible.builtin.set_fact:
-    wg_client:
+    wg__client:
         id: "{{ item.value }}"
         name: "{{ item.key }}"  
 
 - name: Set client config path
   set_fact:
-    wg_client_conf_path: "{{ wg_conf_path }}/{{ wg_client.name }}"
+    wg__client_conf_path: "{{ wg__conf_path }}/{{ wg__client.name }}"
 
 - name: Create client config directory
   file:
-    path: "{{ wg_client_conf_path }}"
+    path: "{{ wg__client_conf_path }}"
     state: directory
 
 - name: Set client files and data
   set_fact:
-    wg_client_yaml_file: "{{ wg_yaml_path }}/{{ wg_client.name }}.yaml"
-    wg_client_conf_file: "{{ wg_client_conf_path }}/{{ wg_network_name }}.conf"
-    wg_client_addr: "{{ wg_network_prefix }}.{{ wg_client.id }}"
-    wg_client_peer_file: "{{ wg_conf_path }}/~peer.conf"
+    wg__client_yaml_file: "{{ wg__yaml_path }}/{{ wg__client.name }}.yaml"
+    wg__client_conf_file: "{{ wg__client_conf_path }}/{{ wg__network_name }}.conf"
+    wg__client_addr: "{{ wg__network_prefix }}.{{ wg__client.id }}"
+    wg__client_peer_file: "{{ wg__conf_path }}/~peer.conf"
 
 - name: Create client private key
   shell: wg genkey
-  register: wg_client_pvt_result
+  register: wg__client_pvt_result
   args:
-    creates: "{{ wg_client_yaml_file }}"
+    creates: "{{ wg__client_yaml_file }}"
 
 - name: Create client public key
-  shell: "echo {{ wg_client_pvt_result.stdout }} | wg pubkey"
-  register: wg_client_pub_result
+  shell: "echo {{ wg__client_pvt_result.stdout }} | wg pubkey"
+  register: wg__client_pub_result
   args:
-    creates: "{{ wg_client_yaml_file }}"
+    creates: "{{ wg__client_yaml_file }}"
 
 - name: Create client psk
   shell: wg genpsk
-  register: wg_client_psk_result
+  register: wg__client_psk_result
   args:
-    creates: "{{ wg_client_yaml_file }}"
+    creates: "{{ wg__client_yaml_file }}"
 
 - name: Write client yaml file
   template:
     src: templates/client_yaml.j2
-    dest: "{{ wg_client_yaml_file }}"
-  when: wg_client_pub_result.changed
+    dest: "{{ wg__client_yaml_file }}"
+  when: wg__client_pub_result.changed
 
 - name: Include client vars from yaml file
   include_vars:
-    file: "{{ wg_client_yaml_file }}"
-    name: wg_client_keys
+    file: "{{ wg__client_yaml_file }}"
+    name: wg__client_keys
 
 - name: Write client config file
   template:
     src: templates/client_conf.j2
-    dest: "{{ wg_client_conf_file }}"
+    dest: "{{ wg__client_conf_file }}"
 
 - name: Write client peer file
   template:
     src: templates/server_peer.j2
-    dest: "{{ wg_client_peer_file }}"
+    dest: "{{ wg__client_peer_file }}"
   changed_when: false
 
 - name: Add client peer to server config
-  shell: "cat {{ wg_client_peer_file }} >> {{ wg_server_conf_file }} && rm {{ wg_client_peer_file }}"
-  delegate_to: localhost
+  shell: "cat {{ wg__client_peer_file }} >> {{ wg__server_conf_file }} && rm {{ wg__client_peer_file }}"
   changed_when: false

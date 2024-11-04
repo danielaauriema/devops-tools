@@ -1,0 +1,5 @@
+---
+nginx__binding_addr: "{{ ansible_host }}"
+nginx__port_bindings:
+  - "{{ nginx__binding_addr }}:80:80"
+  - "{{ nginx__binding_addr }}:443:443"

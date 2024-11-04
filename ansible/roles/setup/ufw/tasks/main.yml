@@ -4,15 +4,15 @@
     name: ufw=0.36.2-1
     update_cache: "no"
 
-- name: "Allow SSH on {{ ufw_ssh_address }}:{{ ufw_ssh_port }}" 
+- name: "Allow SSH on {{ ufw__ssh_address }}:{{ ufw__ssh_port }}" 
   ufw:
     rule: limit
-    port: "{{ ufw_ssh_port }}"
+    port: "{{ ufw__ssh_port }}"
     proto: tcp
     comment: SSH
-    to_ip: "{{ ufw_ssh_address | default (ansible_host) }}" 
+    to_ip: "{{ ufw__ssh_address }}" 
 
-- name: "Deny everything and set state to {{ ufw_state }}"
+- name: "Deny everything and set state to {{ ufw__state }}"
   ufw:
-    state: "{{ ufw_state }}"
+    state: "{{ ufw__state }}"
     policy: deny

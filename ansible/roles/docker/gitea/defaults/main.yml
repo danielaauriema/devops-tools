@@ -1,26 +1,29 @@
 ---
-gitea_db_host: "postgres"
-gitea_db_port: "5432"
-gitea_db_name: "gitea"
-gitea_db_schema: "public"
-gitea_db_user: "gitea"
-gitea_db_password: "password"
+gitea__db_host: "postgres"
+gitea__db_port: "5432"
+gitea__db_name: "gitea"
+gitea__db_schema: "public"
+gitea__db_user: "gitea"
+gitea__db_password: "password"
 
-gitea_admin_user: "gitea"
-gitea_admin_password: "password"
-gitea_admin_email: "gitea@devops-tools.local"
+gitea__admin_user: "gitea"
+gitea__admin_password: "password"
+gitea__admin_email: "gitea@devops-tools.local"
 
-gitea_app_name: "Gitea :: devops-tools!"
-gitea_domain: "gitea.devops-tools.local"
-gitea_root_url: "https://{{ gitea_domain }}"
-gitea_data_path: "/data/gitea"
-gitea_network: "devops-tools"
-gitea_log_level: "Debug" # Trace, Debug, Info, Warn, Error, Fatal
-gitea_run_mode: "dev" # dev, prod
+gitea__app_name: "Gitea :: devops-tools!"
+gitea__domain: "gitea.devops-tools.local"
+gitea__root_url: "https://{{ gitea__domain }}"
+gitea__data_path: "/data/gitea"
+gitea__network: "devops-tools"
+gitea__log_level: "Info" # Trace, Debug, Info, Warn, Error, Fatal
+gitea__run_mode: "prod" # dev, prod
 
-gitea_ssh_port: "222"
-gitea_port_binds:
-  # - "{{ ansible_host }}:3000:3000"
-  - "{{ ansible_host }}:{{ gitea_ssh_port }}:22"
+gitea__host: "gitea"
+gitea__ssh_port: "222"
+gitea__http_port: "3000"
+gitea__binding_addr: "{{ ansible_host }}"
+gitea__port_bindings:
+  - "{{ gitea__binding_addr }}:{{ gitea__ssh_port }}:22"
+  - "{{ gitea__binding_addr }}:{{ gitea__http_port}}:3000"
  
 

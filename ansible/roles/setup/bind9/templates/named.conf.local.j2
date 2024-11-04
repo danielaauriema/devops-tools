@@ -1,4 +1,4 @@
-zone "{{ bind9_ns_domain }}" {
+zone "{{ bind9__ns_domain }}" {
     type master;
-    file "{{ bind9_path }}/db.{{ bind9_ns_domain }}";
+    file "{{ bind9__path }}/db.{{ bind9__ns_domain }}";
 };

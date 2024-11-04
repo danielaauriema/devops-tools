@@ -1,13 +1,13 @@
 ---  
 - name: Create remote ssl certs directories
   file:
-    path: "{{ ssl_remote_certs_path }}"
+    path: "{{ ssl__remote_certs_path }}"
     state: directory
 
 - name: Copy certificates
   copy:
     src: "{{ item }}"
-    dest: "{{ ssl_remote_certs_path }}"
+    dest: "{{ ssl__remote_certs_path }}"
   loop:
-    - "{{ ssl_cert_file_name }}.key"
-    - "{{ ssl_cert_file_name }}.crt"
+    - "{{ ssl__cert_file_name }}.key"
+    - "{{ ssl__cert_file_name }}.crt"

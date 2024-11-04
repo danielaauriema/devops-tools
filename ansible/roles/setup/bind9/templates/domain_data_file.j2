@@ -1,18 +1,18 @@
 ;
-; BIND data file for {{ bind9_ns_domain }}
+; BIND data file for {{ bind9__ns_domain }}
 ;
 $TTL            604800
-@               IN      SOA     {{ bind9_ns_domain }}. root.{{ bind9_ns_domain }}. (
+@               IN      SOA     {{ bind9__ns_domain }}. root.{{ bind9__ns_domain }}. (
                               3         ; Serial
                          604800         ; Refresh
                           86400         ; Retry
                         2419200         ; Expire
                          604800 )       ; Negative Cache TTL
 
-@               IN      NS      ns.{{ bind9_ns_domain }}.
-@               IN      A       {{ bind9_server_addr }}
+@               IN      NS      ns.{{ bind9__ns_domain }}.
+@               IN      A       {{ bind9__server_addr }}
 @               IN      AAAA    ::1
-ns              IN      A       {{ bind9_server_addr }}
-{% for subdomain in bind9_subdomains %}
+ns              IN      A       {{ bind9__server_addr }}
+{% for subdomain in bind9__subdomains %}
 {{ subdomain.name.ljust(15) }} IN      A       {{ subdomain.addr }}
 {% endfor %}

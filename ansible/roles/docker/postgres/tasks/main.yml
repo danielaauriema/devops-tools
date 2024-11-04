@@ -7,22 +7,22 @@
 
 - name: Create postgres container
   docker_container:
-    name: "postgres"
-    image: "postgres:16.4-bullseye"
+    name: "{{ postgres__host }}"
+    image: "postgres:16.4-alpine"
     state: started
     restart: no
     restart_policy : always
     comparisons:
       published_ports: strict      
-    ports: "{{ postgres_port_bind }}"
+    ports: "{{ postgres__port_bindings }}"
     volumes:
-      - "{{ postgres_data_path }}:/data/postgres"
+      - "{{ postgres__data_path }}:/data/postgres"
     env:
-        POSTGRES_DB: "{{ postgres_db }}"
-        POSTGRES_USER: "{{ postgres_user }}"
-        POSTGRES_PASSWORD: "{{ postgres_password }}"
+        POSTGRES_DB: "{{ postgres__db }}"
+        POSTGRES_USER: "{{ postgres__user }}"
+        POSTGRES_PASSWORD: "{{ postgres__password }}"
         PGDATA: "/data/postgres"
     network_mode: bridge
     networks:
-      - name: "{{ postgres_network }}"
+      - name: "{{ postgres__network }}"
 

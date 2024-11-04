@@ -1,0 +1,76 @@
+---
+- name: create LDAP ou=groups
+  ldap_entry:
+    dn: "ou=groups,{{ ldap__base_dn }}"
+    objectClass: 
+      - organizationalUnit
+    server_uri: "{{ ldap__external_server_uri }}"
+    bind_dn: "{{ ldap__admin_dn }}" 
+    bind_pw: "{{ ldap__admin_password }}"  
+
+- name: create LDAP ou=users
+  ldap_entry:
+    dn: "ou=users,{{ ldap__base_dn }}"
+    objectClass: 
+      - organizationalUnit
+    server_uri: "{{ ldap__external_server_uri }}"
+    bind_dn: "{{ ldap__admin_dn }}" 
+    bind_pw: "{{ ldap__admin_password }}" 
+
+- name: Create posixGroup users
+  ldap_entry:
+    dn: "cn=users,ou=groups,{{ ldap__base_dn }}"
+    objectClass: 
+      - posixGroup
+    attributes:
+      gidNumber: 1000
+    server_uri: "{{ ldap__external_server_uri }}"
+    bind_dn: "{{ ldap__admin_dn }}" 
+    bind_pw: "{{ ldap__admin_password }}"  
+
+- set_fact:
+    ldap__user_dn: "cn={{ ldap__user_id }},ou=users,{{ ldap__base_dn }}"
+
+- name: "Create LDAP user {{ ldap__user_id }}"
+  ldap_entry:
+    dn: "{{ ldap__user_dn }}"
+    objectClass:
+      - posixAccount
+      - simpleSecurityObject
+      - organizationalRole
+    attributes:
+      uid: "{{ ldap__user_id }}"
+      uidNumber: 1001
+      gidNumber: 1001
+      homeDirectory: "/home/{{ ldap__user_id }}"
+      description: "{{ ldap__user_description }}"
+      userPassword: "{{ ldap__user_password }}"
+    server_uri: "{{ ldap__external_server_uri }}"
+    bind_dn: "{{ ldap__admin_dn }}" 
+    bind_pw: "{{ ldap__admin_password }}"  
+
+- name: create LDAP admin group
+  ldap_entry:
+    dn: "cn=admin,ou=groups,{{ ldap__base_dn }}"
+    objectClass: 
+      - groupOfNames
+    attributes:
+      member: 
+        - "{{ ldap__user_dn }}"
+    server_uri: "{{ ldap__external_server_uri }}"
+    bind_dn: "{{ ldap__admin_dn }}" 
+    bind_pw: "{{ ldap__admin_password }}"  
+    state: present 
+
+- name: "Create LDAP bind user"
+  ldap_entry:
+    dn: "{{ ldap__bind_dn }}"
+    objectClass:
+      - simpleSecurityObject
+      - organizationalRole
+    attributes:
+      userPassword: "{{ ldap__bind_password }}"
+    server_uri: "{{ ldap__external_server_uri }}"
+    bind_dn: "{{ ldap__admin_dn }}" 
+    bind_pw: "{{ ldap__admin_password }}"  
+

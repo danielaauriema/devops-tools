@@ -1,17 +1,17 @@
 ---
-ssl_data_path: "/data/ssl"
-ssl_base_domain: "devops-tools.local"
+ssl__data_path: "/data/ssl"
+ssl__base_domain: "devops-tools.local"
 
-ssl_ca_system_name: "devops_tools"
-ssl_ca_common_name: "DevOps Tools"
+ssl__ca_system_name: "devops_tools"
+ssl__ca_common_name: "DevOps Tools"
 
-ssl_ca_path: "{{ ssl_data_path }}/{{ ssl_ca_system_name }}_ca"
-ssl_ca_root_path: "{{ ssl_ca_path }}/ca"
-ssl_ca_certs_path: "{{ ssl_ca_path }}/certs"
-ssl_ca_templates_path: "{{ ssl_ca_path }}/templates"
+ssl__ca_path: "{{ ssl__data_path }}/{{ ssl__ca_system_name }}_ca"
+ssl__ca_root_path: "{{ ssl__ca_path }}/ca"
+ssl__ca_certs_path: "{{ ssl__ca_path }}/certs"
+ssl__ca_templates_path: "{{ ssl__ca_path }}/templates"
 
-ssl_ca_csr: "{{ ssl_ca_root_path }}/{{ ssl_ca_system_name }}_ca.csr"
-ssl_ca_pvt_key: "{{ ssl_ca_root_path }}/{{ ssl_ca_system_name }}_ca.key"
-ssl_ca_pub_key: "{{ ssl_ca_root_path }}/{{ ssl_ca_system_name }}_ca.crt"
+ssl__ca_csr: "{{ ssl__ca_root_path }}/{{ ssl__ca_system_name }}_ca.csr"
+ssl__ca_pvt_key: "{{ ssl__ca_root_path }}/{{ ssl__ca_system_name }}_ca.key"
+ssl__ca_pub_key: "{{ ssl__ca_root_path }}/{{ ssl__ca_system_name }}_ca.crt"
 
-ssl_remote_certs_path: "/data/ssl/certs"
+ssl__remote_certs_path: "/data/ssl/certs"

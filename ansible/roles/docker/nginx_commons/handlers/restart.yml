@@ -1,0 +1,18 @@
+---
+- name: Get container info
+  docker_container_info:
+    name: nginx
+  register: nginx__result
+  until: nginx__result.exists and nginx__result.container['State']['Running']
+  retries: 10
+  delay: 2
+
+- name: docker restart nginx
+  docker_container:
+    name: nginx
+    state: started
+    restart: true
+  register: nginx__restart_result
+  until: nginx__restart_result.changed
+  retries: 6
+  delay: 5

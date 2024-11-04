@@ -1,15 +1,30 @@
 ---
-- import_role: 
-    name: docker/nginx/up
+- include_role: 
+    name: docker/nginx
   tags: nginx
+  vars:
+    nginx__binding_addr: "{{ core__server_internal_addr }}"
+    nginx__network: "{{ core__docker_network }}"
+    nginx__base_domain: "{{ core__base_domain}}"
 
-- import_role: 
+- include_role: 
     name: ssl/copy
   tags: nginx, ssl, ssl_certs
   vars:
-    ssl_cert_subdomain_name: _
-    ssl_cert_common_name: "*.{{ core_base_domain }}"   
+    ssl__cert_subdomain_name: _
+    ssl__cert_common_name: "*.{{ core__base_domain }}"   
 
-- import_role: 
-    name: docker/nginx/config
+- include_role: 
+    name: docker/nginx_config
   tags: nginx, nginx_config
+  vars:
+    nginx__base_domain: "{{ core__base_domain }}"
+    nginx__config:
+      - nginx__site: lam
+        nginx__proxy_pass: http://lam/
+      - nginx__site: pgadmin
+        nginx__proxy_pass: http://pgadmin/
+      - nginx__site: "gitea"
+        nginx__proxy_pass: http://gitea:3000/
+
+

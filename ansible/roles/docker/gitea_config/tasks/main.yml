@@ -1,44 +1,35 @@
 ---
-- name: set admin user
+- name: set gitea config commands
   set_fact:
-    gitea_user_exists: "/bin/bash -c \"gitea admin user list | awk -F' ' '{ print $2 }' | grep -E ^{{ gitea_admin_user }}$\""
-    gitea_add_user_cmd: > 
+    gitea__user_exists: "/bin/bash -c \"gitea admin user list | awk -F' ' '{ print $2 }' | grep -E ^{{ gitea__admin_user }}$\""
+    gitea__add_user_cmd: > 
       gitea admin user create 
-      --username {{ gitea_admin_user }} 
-      --password {{ gitea_admin_password }} 
-      --email {{ gitea_admin_email }} 
+      --username {{ gitea__admin_user }} 
+      --password {{ gitea__admin_password }} 
+      --email {{ gitea__admin_email }} 
       --admin -c /data/gitea/conf/app.ini
-    gitea_auth_exists: "/bin/bash -c \"gitea admin auth list |  awk -F' ' '{ print $2 }' | grep -E ^ldap$\""
-    gitea_add_ldap: > 
+    gitea__auth_exists: "/bin/bash -c \"gitea admin auth list |  awk -F' ' '{ print $2 }' | grep -E ^ldap$\""
+    gitea__add_ldap: > 
       gitea admin auth add-ldap 
       --name ldap 
-      --security-protocol {{ gitea_ldap_security_protocol }} 
-      --host {{ gitea_ldap_host }} 
-      --port {{ gitea_ldap_port }}
-      --user-search-base 'ou=people,dc=devops-tools,dc=local' 
+      --security-protocol {{ gitea__ldap_security_protocol }} 
+      --host {{ gitea__ldap_host }} 
+      --port {{ gitea__ldap_port }}
+      --user-search-base '{{ gitea__ldap_search_base }}' 
       --user-filter '(&(objectClass=posixAccount)(uid=%s))' 
+      --admin-filter '(memberof=cn=admin,ou=groups,{{ ldap__base_dn }})' 
       --email-attribute mail 
-      --bind-dn {{ gitea_ldap_bind_dn }} 
-      --bind-password {{ gitea_ldap_bind_password }}
+      --bind-dn {{ gitea__ldap_bind_dn }} 
+      --bind-password {{ gitea__ldap_bind_password }}
       --skip-tls-verify 
-
-# - name: "wait for HTTP"
-#   uri:
-#     url: "https://gitea.devops-tools.local/"
-#     status_code: 200
-#     validate_certs: false
-#   register: gitea_result
-#   until: gitea_result.status == 200
-#   retries: 120
-#   delay: 5
 
 - name: "Wait form container to start"
   community.docker.docker_container_exec:
     container: gitea
     command: "curl 127.0.0.1:3000"
   changed_when: false
-  register: gitea_result
-  until: gitea_result.rc == 0
+  register: gitea__result
+  until: gitea__result.rc == 0
   retries: 120
   delay: 5
 
@@ -46,8 +37,8 @@
   community.docker.docker_container_exec:
     container: gitea
     user: git
-    command: "{{ gitea_user_exists }}"
-  register: gitea_user_exists_result
+    command: "{{ gitea__user_exists }}"
+  register: gitea__user_exists_result
   ignore_errors: true
   changed_when: false
 
@@ -55,15 +46,15 @@
   community.docker.docker_container_exec:
     container: gitea
     user: git
-    command: "{{ gitea_add_user_cmd }}"
-  when: gitea_user_exists_result.rc == 1
+    command: "{{ gitea__add_user_cmd }}"
+  when: gitea__user_exists_result.rc == 1
 
 - name: "Check if ldap config exists"
   community.docker.docker_container_exec:
     container: gitea
     user: git
-    command: "{{ gitea_auth_exists }}"
-  register: gitea_auth_exists_result
+    command: "{{ gitea__auth_exists }}"
+  register: gitea__auth_exists_result
   ignore_errors: true
   changed_when: false
 
@@ -71,5 +62,5 @@
   community.docker.docker_container_exec:
     container: gitea
     user: git
-    command: "{{ gitea_add_ldap }}"
-  when: gitea_auth_exists_result.rc == 1
+    command: "{{ gitea__add_ldap }}"
+  when: gitea__auth_exists_result.rc == 1

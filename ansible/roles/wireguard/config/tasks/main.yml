@@ -4,11 +4,11 @@
     path: "{{ item }}"
     state: directory
   loop:
-    - "{{ wg_yaml_path }}"
-    - "{{ wg_conf_path }}"
-    - "{{ wg_server_conf_path }}"
+    - "{{ wg__yaml_path }}"
+    - "{{ wg__conf_path }}"
+    - "{{ wg__server_conf_path }}"
 
 - include_tasks : server.yml
 
 - include_tasks : client.yml  
-  loop: "{{ wg_clients | dict2items }}"
+  loop: "{{ wg__clients | dict2items }}"

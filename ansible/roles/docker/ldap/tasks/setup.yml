@@ -1,0 +1,53 @@
+---
+- name: Install python3-ldap 
+  apt:
+    pkg: python3-ldap
+
+- name: Create LDAP data path
+  file:
+    path: "{{ ldap__data_path }}"
+    state: directory
+    mode: 0775
+
+- debug:
+    var: ldap__base_dn
+
+- name: Create open LDAP container
+  docker_container:
+    name: "{{ ldap__host }}"
+    image: "bitnami/openldap:2.6.8"
+    state: started
+    restart: no
+    restart_policy : always
+    comparisons:
+      published_ports: strict
+    ports: "{{ ldap__port_bindings }}"
+    volumes:
+      - "{{ ldap__data_path }}:/bitnami/openldap:rw"
+    env:
+      LDAP_ROOT: "{{ ldap__base_dn }}"
+      LDAP_ADMIN_USERNAME: "{{ ldap__admin_username }}"
+      LDAP_ADMIN_PASSWORD: "{{ ldap__admin_password }}"
+      LDAP_ADMIN_DN: "{{ ldap__admin_dn }}"
+      LDAP_USERS: " "
+      LDAP_PASSWORDS: " "
+      LDAP_PORT_NUMBER: "{{ ldap__port }}"
+      LDAP_CONFIG_ADMIN_ENABLED: "yes"
+      LDAP_CONFIG_ADMIN_USERNAME: "{{ ldap__config_username }}"
+      LDAP_CONFIG_ADMIN_PASSWORD: "{{ ldap__config_password }}"
+    network_mode: bridge
+    networks:
+      - name: "{{ ldap__network }}"
+
+- name: Check if the LDAP container is ready
+  community.general.ldap_search:
+    dn: "{{ ldap__base_dn }}"
+    page_size: 1
+    schema: false
+    server_uri: "{{ ldap__external_server_uri }}"
+    bind_dn: "{{ ldap__admin_dn }}" 
+    bind_pw: "{{ ldap__admin_password }}"  
+  register: ldap__result
+  until: not ldap__result.failed
+  retries: 6
+  delay: 5

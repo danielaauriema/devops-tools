@@ -1,0 +1,52 @@
+---
+- name: Create nginx container
+  docker_container:
+    name: "nginx"
+    image: "nginx:1.23-alpine-slim"
+    state: started
+    restart: no
+    restart_policy : always
+    ports: "{{ nginx__port_bindings }}"
+    volumes:
+    - "{{ nginx__data_path }}/templates:/etc/nginx/templates"
+    - "{{ nginx__data_path }}/conf.d:/etc/nginx/conf.d"
+    - "{{ nginx__data_path }}/www:/var/www/"
+    - "{{ nginx__certs_path }}:/data/ssl/certs/"
+    network_mode: bridge
+    networks:
+    - name: "{{ nginx__network }}"
+
+- name: Create ping directory
+  file:
+    path: "{{ nginx__sites_path }}/ping"
+    state: directory
+
+- name: Copy ping file
+  copy:
+    src: "ping.html"
+    dest: "{{ nginx__sites_path }}/ping/index.html"
+  notify: "docker/nginx/restart"
+
+- import_role: 
+    name: docker/nginx_config
+    tasks_from: config.yml
+  vars:
+    nginx__site: "ping"
+    nginx__template: "site_https"
+    nginx__server_name: "ping.{{ nginx__base_domain }}"
+
+- import_role: 
+    name: docker/nginx_config
+    tasks_from: config.yml
+  vars:
+    nginx__site: "deny_all_https"
+    nginx__template: "deny_all_https"
+    nginx__server_name: "_.{{ nginx__base_domain }}"
+
+- import_role: 
+    name: docker/nginx_config
+    tasks_from: config.yml
+  vars:
+    nginx__site: "redirect_httpx"
+    nginx__template: "redirect_httpx"
+    nginx__server_name: "_.{{ nginx__base_domain }}"

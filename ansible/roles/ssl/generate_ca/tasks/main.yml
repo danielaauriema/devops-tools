@@ -1,15 +1,15 @@
 ---
 - name: Generate an OpenSSL private key
   openssl_privatekey:
-    path: "{{ ssl_ca_pvt_key }}"
+    path: "{{ ssl__ca_pvt_key }}"
     mode: 0775
 
 - name: Generate Root CA CSR
   openssl_csr:
-    path: "{{ ssl_ca_csr }}"
-    privatekey_path: "{{ ssl_ca_pvt_key }}"
-    common_name: "{{ ssl_csr_common_name}}"
-    organization_name: "{{ ssl_csr_organization_name }}"
+    path: "{{ ssl__ca_csr }}"
+    privatekey_path: "{{ ssl__ca_pvt_key }}"
+    common_name: "{{ ssl__csr_common_name}}"
+    organization_name: "{{ ssl__csr_organization_name }}"
     basic_constraints:
       - CA:TRUE
     basic_constraints_critical: yes
@@ -21,8 +21,8 @@
 
 - name: Generate Root CA certificate
   openssl_certificate:
-    path: "{{ ssl_ca_pub_key }}"
-    privatekey_path: "{{ ssl_ca_pvt_key }}"
-    csr_path: "{{ ssl_ca_csr }}"
+    path: "{{ ssl__ca_pub_key }}"
+    privatekey_path: "{{ ssl__ca_pvt_key }}"
+    csr_path: "{{ ssl__ca_csr }}"
     provider: selfsigned
     mode: 0775

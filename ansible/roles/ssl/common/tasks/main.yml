@@ -10,5 +10,5 @@
     state: directory
     mode: "0775"
   loop:
-    - "{{ ssl_ca_root_path }}"
-    - "{{ ssl_ca_certs_path }}"
+    - "{{ ssl__ca_root_path }}"
+    - "{{ ssl__ca_certs_path }}"

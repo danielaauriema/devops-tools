@@ -1,0 +1,54 @@
+---
+- ldap_attrs:
+    dn: cn=module{0},cn=config
+    attributes:
+      olcModuleLoad: 
+        - "{{ ldap__lib_path }}/refint.so"
+    server_uri: "{{ ldap__external_server_uri }}"
+    bind_dn: "{{ ldap__config_dn }}" 
+    bind_pw: "{{ ldap__config_password }}"  
+  register: ldap__attrs_result
+  failed_when:
+    - ldap__attrs_result.failed
+    - ldap__attrs_result.details is not defined or (ldap__attrs_result.details|from_yaml)["desc"] != "Type or value exists"
+
+- ldap_attrs:
+    dn: cn=module{0},cn=config
+    attributes:
+      olcModuleLoad: 
+        - "{{ ldap__lib_path }}/memberof.so"
+    server_uri: "{{ ldap__external_server_uri }}"
+    bind_dn: "{{ ldap__config_dn }}" 
+    bind_pw: "{{ ldap__config_password }}"  
+  register: ldap__attrs_result
+  failed_when:
+    - ldap__attrs_result.failed
+    - ldap__attrs_result.details is not defined or (ldap__attrs_result.details|from_yaml)["desc"] != "Type or value exists"
+
+- ldap_entry:
+    dn: olcOverlay=refint,olcDatabase={2}mdb,cn=config
+    objectClass:
+      - olcOverlayConfig
+      - olcRefintConfig
+    attributes:
+      olcOverlay: refint
+      olcRefintAttribute: memberof member manager owner
+    server_uri: "{{ ldap__external_server_uri }}"
+    bind_dn: "{{ ldap__config_dn }}" 
+    bind_pw: "{{ ldap__config_password }}"  
+
+- ldap_entry:
+    dn: olcOverlay=memberof,olcDatabase={2}mdb,cn=config
+    objectClass:
+      - olcOverlayConfig
+      - olcMemberOf
+    attributes:
+      olcOverlay: memberof
+      olcMemberOfDangling: ignore
+      olcMemberOfRefInt: "TRUE"
+      olcMemberOfGroupOC: groupOfNames
+      olcMemberOfMemberAD: member
+      olcMemberOfMemberOfAD: memberOf
+    server_uri: "{{ ldap__external_server_uri }}"
+    bind_dn: "{{ ldap__config_dn }}" 
+    bind_pw: "{{ ldap__config_password }}"  

@@ -1,11 +1,11 @@
-gitea_admin_user: "gitea"
-gitea_admin_password: "password"
-gitea_admin_email: "gitea@devops-tools.local"
+gitea__admin_user: "gitea"
+gitea__admin_password: "password"
+gitea__admin_email: "gitea@devops-tools.local"
 
-gitea_ldap_host: "ldap"
-gitea_ldap_port: 1389
-gitea_ldap_security_protocol: "unencrypted"
-gitea_ldap_user_search_base: "ou=people,dc=devops-tools,dc=local" 
+gitea__ldap_host: "ldap"
+gitea__ldap_port: 1389
+gitea__ldap_security_protocol: "unencrypted"
+gitea__ldap_search_base: "ou=people,dc=devops-tools,dc=local" 
 
-gitea_ldap_bind_dn: "cn=bind,dc=devops-tools,dc=local" 
-gitea_ldap_bind_password: "password"
+gitea__ldap_bind_dn: "cn=bind,dc=devops-tools,dc=local" 
+gitea__ldap_bind_password: "password"

@@ -1,8 +1,9 @@
 ---
-- name: DevOps Tools Setup
+- name: DevOps Core Tools
   hosts: server
   become: true
   gather_facts: no
+
   roles:
     - role: core/server
       tags: core_server
@@ -14,10 +15,3 @@
       tags: core_gitea
     - role: core/nginx
       tags: core_nginx
-      nginx_config:
-        - nginx_site: ldap
-          nginx_proxy_pass: http://lam/
-        - nginx_site: pgadmin
-          nginx_proxy_pass: http://pgadmin/
-        - nginx_site: "gitea"
-          nginx_proxy_pass: http://gitea:3000/

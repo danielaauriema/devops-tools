@@ -1,0 +1,19 @@
+---  
+- include_role: 
+    name: wireguard/config
+  tags: wireguard
+  vars:
+    wg__network_prefix: "{{ core__network_prefix }}"
+    wg__server_internal_addr: "{{ core__server_internal_addr }}"
+    wg__server_addr: "{{ hostvars['server'].ansible_host }}"
+
+- include_role: 
+    name: ssl/generate_ca
+  tags: ssl, ssl_ca
+  
+- include_role: 
+    name: ssl/generate_cert
+  tags: ssl, ssl_certs
+  vars:
+    ssl__cert_subdomain_name: _
+    ssl__cert_common_name: "*.{{ ssl__base_domain }}"

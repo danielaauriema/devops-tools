@@ -1,7 +1,7 @@
 ---
-ssl_cert_fqdn: "{{ ssl_cert_subdomain_name }}.{{ ssl_base_domain }}"
-ssl_cert_file_name: "{{ ssl_ca_certs_path }}/{{ ssl_cert_fqdn }}"
-ssl_cert_subject_alt_name:
-  - "DNS: {{ ssl_cert_fqdn }}"
-ssl_cert_common_name: "{{ ssl_cert_fqdn }}"
-ssl_cert_organization_name: "{{ ssl_ca_common_name }}"
+ssl__cert_fqdn: "{{ ssl__cert_subdomain_name }}.{{ ssl__base_domain }}"
+ssl__cert_file_name: "{{ ssl__ca_certs_path }}/{{ ssl__cert_fqdn }}"
+ssl__cert_subject_alt_name:
+  - "DNS: {{ ssl__cert_fqdn }}"
+ssl__cert_common_name: "{{ ssl__cert_fqdn }}"
+ssl__cert_organization_name: "{{ ssl__ca_common_name }}"

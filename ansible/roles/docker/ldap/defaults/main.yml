@@ -1,24 +1,26 @@
 ---
-ldap_base_dn: "dc=devops-tools,dc=local"
-ldap_admin_username: "admin"
-ldap_admin_password: "password"
-ldap_admin_dn: "cn={{ ldap_admin_username }},{{ ldap_base_dn }}"
-ldap_bind_dn: "cn=bind,{{ ldap_base_dn }}" 
-ldap_bind_password: "password" 
+ldap__base_dn: "dc=devops-tools,dc=local"
+ldap__admin_username: "admin"
+ldap__admin_password: "password"
+ldap__admin_dn: "cn={{ ldap__admin_username }},{{ ldap__base_dn }}"
+ldap__bind_dn: "cn=bind,{{ ldap__base_dn }}" 
+ldap__bind_password: "password" 
 
-ldap_user_id: "devops"
-ldap_user_password: "password"
-ldap_user_description: "DevOps Tools User"
+ldap__user_id: "devops"
+ldap__user_password: "password"
+ldap__user_description: "DevOps Tools User"
 
-ldap_port: "1389"
-ldap_internal_port: "1389"
+ldap__host: "ldap"
+ldap__port: "1389"
+ldap__external_addr: "{{ ansible_host }}"
+ldap__internal_addr: "{{ ansible_host }}"
 
-ldap_port_bind: "{{ ldap_port }}"
-ldap_data_path: "/data/openldap"
-ldap_network: "devops-tools"
-ldap_addr: "{{ ansible_host }}"
-ldap_server_uri: "ldap://{{ ldap_addr }}:{{ ldap_port }}"
+ldap__data_path: "/data/openldap"
+ldap__network: "devops-tools"
+ldap__addr: "{{ ansible_host }}"
+ldap__server_uri: "ldap://{{ ldap__external_addr }}:{{ ldap__port }}"
 
-ldap_ports:
-  - "{{ ldap_addr }}:{{ ldap_port }}:{{ ldap_internal_port }}"
-  - "{{ ldap_addr }}:1636:1636"
+ldap__lib_path: "/opt/bitnami/openldap/lib/openldap"
+
+ldap__port_bindings:
+  - "{{ ldap__external_addr }}:{{ ldap__port }}:{{ ldap__port }}"

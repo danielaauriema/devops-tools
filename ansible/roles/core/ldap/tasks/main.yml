@@ -2,6 +2,12 @@
 - import_role: 
     name: docker/ldap
   tags: ldap
+  vars:
+    ldap__network: "{{ core__docker_network }}"
+    ldap__data_path: "{{ core__data_path }}/openldap"
+  
 - import_role: 
     name: docker/lam
-  tags: [ ldap, lam ]
+  tags: lam
+  vars:
+    lam__network: "{{ core__docker_network }}"

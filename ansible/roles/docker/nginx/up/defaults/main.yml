@@ -1,4 +1,0 @@
----
-nginx_server_addr: "{{ ansible_host }}"
-nginx_http_port_bind: "{{ nginx_server_addr }}:80"
-nginx_https_port_bind: "{{ nginx_server_addr }}:443"

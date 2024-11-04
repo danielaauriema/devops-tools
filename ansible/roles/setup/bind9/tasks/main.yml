@@ -6,17 +6,17 @@
   
 - name: Copy named.conf.options
   template:
-    src: "named.conf.options"
-    dest: "{{ bind9_path }}"
+    src: "named.conf.options.j2"
+    dest: "{{ bind9__path }}/named.conf.options"
   notify: bind/restart
 
 - name: "Copy named.conf.local"
   template:
     src: "templates/named.conf.local.j2"
-    dest: "{{ bind9_path }}/named.conf.local"
+    dest: "{{ bind9__path }}/named.conf.local"
   notify: bind/restart
 
-- include_tasks : config.yml
+- include_tasks: config.yml
 
 - name: "UFW allow Bind9"
   ufw:
@@ -24,4 +24,5 @@
     port: 53
     direction: "in"
     comment: Bind/DNS  
-    to_ip: "{{ bind9_server_addr }}" 
+    to_ip: "{{ bind9__server_addr }}" 
+  when: core__ufw | default(true)

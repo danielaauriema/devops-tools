@@ -1,20 +1,43 @@
 ---
+- set_fact:
+    gitea__db_name: "gitea"
+
 - import_role: 
     name: postgres/add_db
   tags: gitea
   vars:
-    pg_db_name: "{{ gitea_db_name }}"
-    pg_db_user: "{{ gitea_db_user }}"
-    pg_db_password: "{{ gitea_db_password }}"
-    pg_login_host: "{{ core_server_internal_addr }}"
-    pg_login_user: "{{ gitea_db_admin_user }}"
-    pg_login_password: "{{ gitea_db_admin_password }}"      
+    pg__db_name: "{{ gitea__db_name }}"
+    pg__db_user: "{{ gitea__db_user }}"
+    pg__db_password: "{{ gitea__db_password }}"
+    pg__login_host: "{{ postgres__binding_addr }}"
+    pg__login_user: "{{ postgres__user }}"
+    pg__login_password: "{{ postgres__password }}"      
 
 - import_role: 
     name: docker/gitea
   tags: gitea, gitea_install
+  vars:
+    gitea__domain: "gitea.{{ core__base_domain }}"
+    gitea__data_path: "{{ core__data_path }}/gitea"
+    gitea__network: "{{ core__docker_network }}"
+    gitea__binding_addr: "{{ core__server_internal_addr }}"
+    gitea__port_bindings:
+      - "{{ gitea__binding_addr }}:{{ gitea__ssh_port }}:22"
 
 - import_role: 
     name: docker/gitea_config
-  tags: gitea, gitea_config 
+  tags: gitea, gitea_config
+  vars:
+    gitea__ldap_host: "{{ ldap__internal_addr }}"
+    gitea__ldap_port: "{{ ldap__port }}"
+    gitea__ldap_security_protocol: "unencrypted"
+    gitea__ldap_search_base: "{{ ldap__search_base }}" 
+    gitea__ldap_bind_dn: "{{ ldap__bind_dn }}" 
+    gitea__ldap_bind_password: "{{ ldap__bind_password }}"
+
+- import_role: 
+    name: docker/gitea_runner
+  tags: gitea, gitea_runner
+  vars:
+    gitea__network: "{{ core__docker_network }}"
 

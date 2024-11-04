@@ -1,20 +1,20 @@
 ---
-- name: "Create database user {{ pg_db_user }}"
+- name: "Create database user {{ pg__db_user }}"
   postgresql_user:
     db: "postgres"
-    name: "{{ pg_db_user }}"
-    password: "{{ pg_db_password }}"
-    login_host: "{{ pg_login_host}}"
-    login_user: "{{ pg_login_user }}"
-    login_password: "{{ pg_login_password }}"    
+    name: "{{ pg__db_user }}"
+    password: "{{ pg__db_password }}"
+    login_host: "{{ pg__login_host}}"
+    login_user: "{{ pg__login_user }}"
+    login_password: "{{ pg__login_password }}"    
     role_attr_flags: NOSUPERUSER,NOCREATEDB
     state: present
 
 - name: Create the new database
   postgresql_db: 
-    name: "{{ pg_db_name }}"
-    owner: "{{ pg_db_user }}"
-    login_host: "{{ pg_login_host}}"
-    login_user: "{{ pg_login_user }}"
-    login_password: "{{ pg_login_password }}"    
+    name: "{{ pg__db_name }}"
+    owner: "{{ pg__db_user }}"
+    login_host: "{{ pg__login_host}}"
+    login_user: "{{ pg__login_user }}"
+    login_password: "{{ pg__login_password }}"    
     state: present

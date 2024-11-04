@@ -1,23 +1,74 @@
 ---
-core_network_prefix: "172.16.20"
-core_server_internal_addr: "{{ core_network_prefix }}.1"
+core__data_path: "/data"
+core__config_path: "/devops"
+core__network_prefix: "172.16.21"
+core__server_internal_addr: "{{ core__network_prefix }}.1"
+core__base_domain: "devops-core.local"
+core__docker_network: "core-docker-network"
 
-# wireguard config
-wg_internal_addr: "{{ core_server_internal_addr }}"
-wg_server_addr: "{{ hostvars['server']['ansible_host'] }}"
+# VPN config
+wg__network_name: "wg_core"
+wg__server_port: "51820"
+wg__data_path: "{{ core__config_path }}/wireguard"
+wg__clients:
+  client_01: "101"
+  client_02: "102"
+  client_03: "103"
 
-# bind config
-bind9_server_addr: "{{ core_server_internal_addr }}"
-bind9_subdomains: 
-  - { name: "*", addr: "{{ core_server_internal_addr }}" }
-
-# nginx config
-nginx_server_addr: "{{ core_server_internal_addr }}"
+# SSL config
+ssl__base_domain: "{{ core__base_domain }}"
+ssl__ca_system_name: "devops_core"
+ssl__ca_common_name: "DevOps Core Tools"
+ssl__data_path: "{{ core__config_path }}/ssl"
 
 # ldap config
-ldap_addr: "{{ core_server_internal_addr }}"
-ldap_external_server_uri: "ldap://{{ ldap_addr }}:{{ ldap_port }}"
-ldap_internal_server_uri: "ldap://ldap:{{ ldap_internal_port }}"
+ldap__base_dn: "dc=devops-core,dc=local"
+ldap__admin_username: "admin"
+ldap__admin_password: "password"
+
+ldap__bind_dn: "cn=bind,{{ ldap__base_dn }}" 
+ldap__bind_password: "password" 
+ldap__search_base: "ou=users,{{ ldap__base_dn }}"
+
+ldap__config_username: "master"
+ldap__config_password: "password"
+ldap__config_dn: "cn={{ ldap__config_username }},cn=config"
+
+ldap__user_id: "devops"
+ldap__user_password: "password"
+ldap__user_description: "DevOps Core User"
+
+ldap__host: "ldap"
+ldap__port: "1389"
+ldap__internal_addr: "{{ ldap__host }}"
+ldap__external_addr: "{{ core__server_internal_addr }}"
+
+ldap__external_server_uri: "ldap://{{ ldap__external_addr }}:{{ ldap__port }}"
+ldap__internal_server_uri: "ldap://{{ ldap__internal_addr }}:{{ ldap__port }}"
+
+# lam config
+lam__master_password: "password"
 
 # postgres config
-postgres_addr: "{{ core_server_internal_addr }}"
+postgres__host: "postgres"
+postgres__user: "postgres_core"
+postgres__password: "password"
+postgres__binding_addr: "{{ core__server_internal_addr }}"
+
+# pgadmin config
+pgadmin__default_email: "devops@devops-core.io"
+pgadmin__default_password: "password"
+
+# gitea config
+gitea__host: "gitea"
+gitea__ssh_port: "222"
+gitea__http_port: "3000"
+
+gitea__app_name: "Gitea :: Core DevOps Tools!"
+
+gitea__db_user: "gitea"
+gitea__db_password: "password"
+
+gitea__admin_user: "gitea"
+gitea__admin_password: "password"
+gitea__admin_email: "gitea@devops-core.local"

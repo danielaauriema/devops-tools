@@ -2,6 +2,14 @@
 - import_role: 
     name: docker/postgres
   tags: postgres
+  vars:
+    postgres__addr: "{{ core__server_internal_addr }}"
+    postgres__network: "{{ core__docker_network }}" 
+    postgres__data_path: "{{ core__data_path }}/postgres"
+  
 - import_role: 
     name: docker/pgadmin
   tags: pgadmin
+  vars:
+    pgadmin__network: "{{ core__docker_network }}" 
+    pgadmin__data_path: "{{ core__data_path }}/pgadmin/data"

@@ -1,6 +1,6 @@
 [Interface]
-PrivateKey = {{ wg_server_keys.server_pvt_key }}
-Address = {{ wg_server_internal_addr }}/32
-ListenPort = {{ wg_server_port }}
-PreUp = iptables -A FORWARD -i {{ wg_server_intf_name }} -j ACCEPT  
-PostDown = iptables -D FORWARD -i {{ wg_server_intf_name }} -j ACCEPT  
+PrivateKey = {{ wg__server_keys.server_pvt_key }}
+Address = {{ wg__server_internal_addr }}/32
+ListenPort = {{ wg__server_port }}
+PreUp = iptables -A FORWARD -i {{ wg__server_intf_name }} -j ACCEPT  
+PostDown = iptables -D FORWARD -i {{ wg__server_intf_name }} -j ACCEPT  

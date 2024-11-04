@@ -1,13 +1,13 @@
 [Interface]
-PrivateKey = {{ wg_client_keys.client_pvt_key }}
-Address = {{ wg_client_addr }}/32
-{% if not wg_client_dns is none %}
-DNS = {{ wg_client_dns }}
+PrivateKey = {{ wg__client_keys.client_pvt_key }}
+Address = {{ wg__client_addr }}/32
+{% if not wg__client_dns is none %}
+DNS = {{ wg__client_dns }}
 {% endif %}
 
 [Peer]
-PublicKey = {{ wg_server_keys.server_pub_key }}
-PresharedKey = {{ wg_client_keys.client_psk }}
-AllowedIPs = {{ wg_client_allowed_ips }}
-Endpoint = {{ wg_server_addr }}:{{ wg_server_port }}
-PersistentKeepalive = {{ wg_client_persistent_keepalive }}
+PublicKey = {{ wg__server_keys.server_pub_key }}
+PresharedKey = {{ wg__client_keys.client_psk }}
+AllowedIPs = {{ wg__client_allowed_ips }}
+Endpoint = {{ wg__server_addr }}:{{ wg__server_port }}
+PersistentKeepalive = {{ wg__client_persistent_keepalive }}

@@ -22,7 +22,8 @@
     gitea__network: "{{ core__docker_network }}"
     gitea__binding_addr: "{{ core__server_internal_addr }}"
     gitea__port_bindings:
-      - "{{ gitea__binding_addr }}:{{ gitea__ssh_port }}:22"
+      # - "{{ gitea__binding_addr }}:{{ gitea__ssh_port }}:22"
+      - "{{ gitea__ssh_port }}:22"
 
 - import_role: 
     name: docker/gitea_config

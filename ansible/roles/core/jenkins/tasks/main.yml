@@ -1,0 +1,7 @@
+---
+- import_role: 
+    name: docker/jenkins
+  tags: jenkins
+  vars:
+    jenkins__network: "{{ core__docker_network }}"
+    jenkins__data_path: "{{ core__data_path }}/jenkins"

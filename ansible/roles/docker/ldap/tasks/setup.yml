@@ -9,9 +9,6 @@
     state: directory
     mode: 0775
 
-- debug:
-    var: ldap__base_dn
-
 - name: Create open LDAP container
   docker_container:
     name: "{{ ldap__host }}"

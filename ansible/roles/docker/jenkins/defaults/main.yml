@@ -1,0 +1,5 @@
+---
+jenkins__data_path: "/data/jenkins"
+jenkins__network: "devops-tools"
+jenkins__port_bindings:
+  - "50000:50000"

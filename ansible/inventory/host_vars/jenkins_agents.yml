@@ -1,0 +1,13 @@
+
+jenkins__url: http://jenkins:8080
+jenkins__agents:
+  - name: "docker1"
+    image: "jenkins/jnlp-agent-docker"
+    secret: "<secret1>"
+  - name: "docker2"
+    image: "jenkins/jnlp-agent-docker"
+    secret: "<secret2>"
+  - name: "python3"
+    image: "jenkins/jnlp-agent-python3"
+    secret: "<secret3>"
+

@@ -1,0 +1,27 @@
+---
+- name: Create Jenkins data path
+  file:
+    path: "{{ jenkins__data_path }}/home"
+    state: directory
+    mode: 0777
+
+- name: Create jenkins container
+  docker_container:
+    name: "jenkins"
+    image: "jenkins/jenkins:2.479.1-lts-jdk21"
+    state: started
+    restart: no
+    privileged: "true"
+    restart_policy : always
+    comparisons:
+      published_ports: strict
+    ports: "{{ jenkins__port_bindings }}"
+    volumes:
+      - "{{ jenkins__data_path }}/home:/var/jenkins_home:rw"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    env:
+      GIT_SSL_NO_VERIFY: "true"
+    network_mode: bridge
+    networks:
+      - name: "{{ jenkins__network }}"
+

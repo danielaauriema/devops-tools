@@ -26,5 +26,7 @@
         nginx__proxy_pass: http://pgadmin/
       - nginx__site: "gitea"
         nginx__proxy_pass: http://gitea:3000/
+      - nginx__site: "jenkins"
+        nginx__proxy_pass: http://jenkins:8080/
 
 

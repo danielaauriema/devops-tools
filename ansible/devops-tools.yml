@@ -13,5 +13,7 @@
       tags: core_database
     - role: core/gitea
       tags: core_gitea
+    - role: core/jenkins
+      tags: core_jenkins
     - role: core/nginx
       tags: core_nginx

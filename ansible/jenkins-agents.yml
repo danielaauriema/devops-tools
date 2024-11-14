@@ -1,0 +1,9 @@
+---
+- name: DevOps Core Tools
+  hosts: jenkins_agents
+  become: true
+  gather_facts: no
+
+  roles:
+    - role: core/jenkins_agent
+      tags: core_jenkins_agent

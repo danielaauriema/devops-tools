@@ -25,16 +25,3 @@
     networks:
       - name: "{{ jenkins__network }}"
 
-- name: Create jenkins agent container
-  docker_container:
-    name: "jenkins-agent-dind"
-    image: "jenkins-agent-dind"
-    state: started
-    restart: no
-    privileged: "true"
-    restart_policy : always
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
-    network_mode: bridge
-    networks:
-      - name: "{{ jenkins__network }}"

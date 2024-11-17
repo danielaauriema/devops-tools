@@ -23,6 +23,7 @@
   vars:
     wg__network_prefix: "{{ core__network_prefix }}"
     wg__server_internal_addr: "{{ core__server_internal_addr }}"
+    wg__server_addr: "{{ ansible_host }}"
 
 - block:
   - import_role: 

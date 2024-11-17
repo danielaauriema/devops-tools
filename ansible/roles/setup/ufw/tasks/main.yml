@@ -4,7 +4,7 @@
     name: ufw=0.36.2-1
     update_cache: "no"
 
-- name: "Allow SSH on {{ ufw__ssh_address }}:{{ ufw__ssh_port }}" 
+- name: "UFW allow SSH" 
   ufw:
     rule: limit
     port: "{{ ufw__ssh_port }}"

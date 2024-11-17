@@ -10,7 +10,14 @@ The goal is to make it a complete set of tools contaning at least:
 
 # Quick Start Guide
 
-Add your user name and server address in ansible inventory hosts file:
+Install the following software to install everything in a single local virtual machine:
+- Virtualbox: https://www.virtualbox.org/wiki/Downloads
+- Vagrant: https://developer.hashicorp.com/vagrant/install?product_intent=vagrant
+Go to `vagrant` folder and execute `run.bat`.
+
+## Custom configuration
+
+To install in a different machine, add your user name and server address in ansible inventory hosts file:
 ```
 ./ansible/inventory/hosts.yml
 ```

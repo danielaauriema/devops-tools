@@ -1,0 +1,10 @@
+---
+- name: set core__storage_path
+  set_fact:
+    core__storage_path: "{{ playbook_dir }}/../data"
+  when: core__storage_path is undefined
+
+- name: set core__config_path
+  set_fact:
+    core__config_path: "{{ core__storage_path }}/{{ core__name }}"
+  when: core__config_path is undefined

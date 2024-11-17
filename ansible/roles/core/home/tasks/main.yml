@@ -1,0 +1,27 @@
+---
+- name: Create home directory
+  file:
+    path: "{{ nginx__sites_path }}/home"
+    state: directory
+    mode: 0775
+
+- name: Copy home images
+  copy:
+    src: "images"
+    dest: "{{ nginx__sites_path }}/home"
+  notify: "docker/nginx/restart"
+
+- name: Copy home site
+  template:
+    src: "index.html.j2"
+    dest: "{{ nginx__sites_path }}/home/index.html"
+  notify: "docker/nginx/restart"
+
+- import_role: 
+    name: docker/nginx_config
+    tasks_from: config.yml
+  vars:
+    nginx__site: "home"
+    nginx__template: "site_https"
+    nginx__server_name: "{{ core__base_domain }}"
+    nginx__base_domain: "{{ core__base_domain}}"

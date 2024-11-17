@@ -19,5 +19,7 @@
       tags: core_gitea
     - role: core/jenkins
       tags: core_jenkins
+    - role: core/home
+      tags: core_home
     - role: core/nginx
       tags: core_nginx

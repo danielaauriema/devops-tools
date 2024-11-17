@@ -29,4 +29,9 @@
       - nginx__site: "jenkins"
         nginx__proxy_pass: http://jenkins:8080/
 
+- debug:
+    msg:
+      - Setup has finished!
+      - Go to https://{{ core__base_domain }} to start. 
+
 

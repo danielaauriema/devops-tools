@@ -10,9 +10,10 @@ The goal is to make it a complete set of tools contaning at least:
 
 # Quick Start Guide
 
-Install the following software to install everything in a single local virtual machine:
+Install the following software to run everything in a single local virtual machine:
 - Virtualbox: https://www.virtualbox.org/wiki/Downloads
 - Vagrant: https://developer.hashicorp.com/vagrant/install?product_intent=vagrant
+  
 Go to `vagrant` folder and execute `run.bat`.
 
 ## Custom configuration

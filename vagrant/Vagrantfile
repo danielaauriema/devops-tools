@@ -1,0 +1,35 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "bento/debian-12.6"
+  config.vm.box_check_update = false
+  
+  config.vm.network "forwarded_port", id: "ssh", host: 10222, guest: 22
+  config.vm.network "private_network", ip: "192.168.33.10"
+
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+  config.vm.synced_folder "../ansible", "/devops-tools/ansible"
+  config.vm.synced_folder "../data", "/devops-tools/data"
+  config.vm.synced_folder ".vagrant/machines/default/virtualbox", "/virtualbox"
+
+  config.vm.provision "shell", inline: <<-SHELL
+    apt-get update
+    apt-get install -y vim ufw curl wget gpg python3
+    # ufw SSH config
+    ufw limit in on eth0 to any port 22 
+    # ansible install
+    wget -O- "https://keyserver.ubuntu.com/pks/lookup?fingerprint=on&op=get&search=0x6125E2A8C77F2818FB7BD15B93C4A3FD7BB9C367" | gpg --batch --yes --dearmour -o /usr/share/keyrings/ansible-archive-keyring.gpg
+    echo "deb [signed-by=/usr/share/keyrings/ansible-archive-keyring.gpg] http://ppa.launchpad.net/ansible/ansible/ubuntu jammy main" | tee /etc/apt/sources.list.d/ansible.list
+    apt update
+    apt install -y ansible
+    # copy private key
+    SSH_PATH=/devops-tools/.ssh
+    mkdir -p $SSH_PATH
+    cp /virtualbox/private_key $SSH_PATH
+    chown -R vagrant $SSH_PATH
+    chmod 700 $SSH_PATH/private_key
+    # add host identification to know hosts
+    ssh-keyscan -H 192.168.33.10 >> /home/vagrant/.ssh/known_hosts
+  SHELL
+end

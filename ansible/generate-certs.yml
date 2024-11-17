@@ -3,6 +3,11 @@
   hosts: localhost
   become: true
   gather_facts: no
+
+  pre_tasks:
+    - import_role:
+        name: core/init
+
   roles:    
     - role: core/generators
 

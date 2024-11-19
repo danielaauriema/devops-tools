@@ -27,21 +27,10 @@ To install in a different machine, add your user name and server address in ansi
 ./ansible/inventory/hosts.yml
 ```
 
-Run then following command to generate SSL and VPN keys:
-```
-ansible-playbook ./ansible/generate-certs.yml -i ./ansible/inventory
-```
-
-Run then following command to execute the project:
+Run then following command to generate SSL/VPN keys and execure the project:
 ```
 ansible-playbook ./ansible/devops-tools.yml -i ./ansible/inventory
 ```
-
-The project will install jenkins but you need to finish the instalation by yourself.
-You can setup LDAP authentication to your own open LDAP server.
-When the setup is complete, you can create some nodes and add the configuration in the `jenkins_agents.yml` file in the `host_vars` inventory folder.
-
-_Planing to add soon Jenkins configuration as a code plugin out of the box!_
 
 # Going deeper in the devops-tools project
 
@@ -106,12 +95,8 @@ This admin group is an object of type `groupOfNames` and it doesn't have support
 
 ### Jenkins
 
-Jenkins will be installed, but you need to finish the installation by your self.
-You need to access your docker server and see the jenkins log to get the installation password. You can do this by typing `docker logs jenkins`.
-
-The final step is to create some Jenkins nodes, and fill the `hosts_vars` in the `jenkins_agents.yml` file.
-After this you can run the following command to install start the nodes: 
-
-```
-ansible-playbook ./ansible/jenkins-agents.yml -i ./ansible/inventory
-```
+Jenkins will be installed with Jenkins configurations as code plugin and two nodes.
+It will be already connected to LDAP server, so you can login with your LDAP username and password.
+The default values are:
+username: devops
+password: password

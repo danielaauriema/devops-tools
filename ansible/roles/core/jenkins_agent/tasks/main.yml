@@ -1,9 +1,0 @@
----
-- include_role: 
-    name: docker/jenkins_agent
-  vars:
-    jenkins__network: "{{ core__docker_network }}"
-    jenkins__agent_secret: "{{ item.secret }}"
-    jenkins__agent_name: "{{ item.name }}"
-    jenkins__agent_image: "{{ item.image }}"
-  loop: "{{ jenkins__agents }}"

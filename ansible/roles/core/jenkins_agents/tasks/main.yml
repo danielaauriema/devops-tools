@@ -1,0 +1,19 @@
+---
+- name: Wait for Jenkins ping
+  community.docker.docker_container_exec:
+    container: jenkins
+    command: "curl -k -u {{ jenkins__username }}:{{ jenkins__secret }} {{ jenkins__local_url }}/metrics/currentUser/ping"  
+  register: jenkins__result
+  until: 
+    - jenkins__result.rc == 0 
+    - jenkins__result.stdout == "pong"
+  retries: 30
+  delay: 5
+
+- include_tasks: agent.yml
+  vars:
+    jenkins__network: "{{ core__docker_network }}"
+    jenkins__agent_name: "{{ item.name }}"
+    jenkins__agent_image: "{{ item.image }}"
+    jenkins__agent_volumes: "{{ item.volumes | default ([]) }}"
+  loop: "{{ jenkins__agents }}"

@@ -1,8 +1,15 @@
 ---
-- name: Generate an OpenSSL private key
+- name: check if CA private key exists
+  stat:
+    path: "{{ ssl__ca_pvt_key }}"
+  register: stat__result
+
+- name: Generate an OpenSSL CA private key
   openssl_privatekey:
     path: "{{ ssl__ca_pvt_key }}"
     mode: 0775
+  register: ssl__ca_pvt_key_result
+  when: not stat__result.stat.exists
 
 - name: Generate Root CA CSR
   openssl_csr:
@@ -19,10 +26,16 @@
       - cRLSign
     key_usage_critical: yes
 
-- name: Generate Root CA certificate
+- name: check if Root CA public key exists
+  stat:
+    path: "{{ ssl__ca_pub_key }}"
+  register: stat__result
+
+- name: Generate Root CA public key
   openssl_certificate:
     path: "{{ ssl__ca_pub_key }}"
     privatekey_path: "{{ ssl__ca_pvt_key }}"
     csr_path: "{{ ssl__ca_csr }}"
     provider: selfsigned
     mode: 0775
+  when: not stat__result.stat.exists

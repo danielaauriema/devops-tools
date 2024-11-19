@@ -2,6 +2,7 @@ jenkins__network: "devops-tools"
 jenkins__url: http://jenkins:8080
 jenkins__agent_secret: "secret"
 jenkins__agent_name: "docker"
-jenkins__agent_path: "/var/jenkins/{{ jenkins__agent_name }}"
+jenkins__agent_path: "/var/jenkins_home/{{ jenkins__agent_name }}"
 jenkins__agent_image: "jenkins/jnlp-agent-docker"
 jenkins__agent_container_name: "jenkins-agent-{{ jenkins__agent_name }}"
+jenkins__agent_volumes: []

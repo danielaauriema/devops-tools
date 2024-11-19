@@ -1,4 +1,16 @@
 ---
+- name: Copy jenkins build files
+  copy:
+    src: "build"
+    dest: "{{ jenkins__data_path }}"
+
+- name: Build jenkins JCasC image 
+  community.docker.docker_image:
+    name: jenkins-jcasc
+    build:
+      path: "{{ jenkins__data_path }}/build"
+    source: build
+
 - name: Create Jenkins data path
   file:
     path: "{{ jenkins__data_path }}/home"
@@ -8,7 +20,7 @@
 - name: Create jenkins container
   docker_container:
     name: "jenkins"
-    image: "jenkins/jenkins:2.479.1-lts-jdk21"
+    image: "jenkins-jcasc"
     state: started
     restart: no
     privileged: "true"
@@ -18,9 +30,12 @@
     ports: "{{ jenkins__port_bindings }}"
     volumes:
       - "{{ jenkins__data_path }}/home:/var/jenkins_home:rw"
-      - "/var/run/docker.sock:/var/run/docker.sock"
     env:
       GIT_SSL_NO_VERIFY: "true"
+      LDAP__BIND_DN: "{{ ldap__bind_dn }}"
+      LDAP__BIND_PASSWORD: "{{ ldap__bind_password }}"
+      LDAP__BASE_DN: "{{ ldap__base_dn }}"
+      LDAP__SERVER: "ldap://{{ ldap__host }}:{{ ldap__port }}"
     network_mode: bridge
     networks:
       - name: "{{ jenkins__network }}"

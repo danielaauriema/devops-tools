@@ -27,7 +27,7 @@
     networks:
       - name: "{{ gitea__network }}"
 
-- name: "Install nodejs"
+- name: "Install nodejs in gitea runner"
   community.docker.docker_container_exec:
     container: gitea_runner
     command: "apk add --no-cache nodejs"

@@ -1,5 +1,5 @@
 ---
-- name: set gitea config commands
+- name: Set gitea config commands
   set_fact:
     gitea__user_exists: "/bin/bash -c \"gitea admin user list | awk -F' ' '{ print $2 }' | grep -E ^{{ gitea__admin_user }}$\""
     gitea__add_user_cmd: > 
@@ -23,7 +23,7 @@
       --bind-password {{ gitea__ldap_bind_password }}
       --skip-tls-verify 
 
-- name: "Wait form container to start"
+- name: "Wait for gitea container to start"
   community.docker.docker_container_exec:
     container: gitea
     command: "curl 127.0.0.1:3000"
@@ -33,7 +33,7 @@
   retries: 120
   delay: 5
 
-- name: "Check if user exists"
+- name: "Check if gitea user exists"
   community.docker.docker_container_exec:
     container: gitea
     user: git
@@ -42,14 +42,14 @@
   ignore_errors: true
   changed_when: false
 
-- name: "Add admin user"
+- name: "Add gitea admin user"
   community.docker.docker_container_exec:
     container: gitea
     user: git
     command: "{{ gitea__add_user_cmd }}"
   when: gitea__user_exists_result.rc == 1
 
-- name: "Check if ldap config exists"
+- name: "Check if LDAP config exists"
   community.docker.docker_container_exec:
     container: gitea
     user: git
@@ -58,7 +58,7 @@
   ignore_errors: true
   changed_when: false
 
-- name: "Add ldap config"
+- name: "Add LDAP config"
   community.docker.docker_container_exec:
     container: gitea
     user: git

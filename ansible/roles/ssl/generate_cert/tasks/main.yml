@@ -1,8 +1,14 @@
 ---  
+- name: check if host private key exists
+  stat:
+    path: "{{ ssl__cert_file_name }}.key"
+  register: stat__result
+
 - name: Generate host private key
   openssl_privatekey:
     path: "{{ ssl__cert_file_name }}.key"
     mode: 0775
+  when: not stat__result.stat.exists
 
 - name: Generate host CSR
   openssl_csr:
@@ -12,6 +18,11 @@
     organization_name: "{{ ssl__cert_organization_name }}"
     subject_alt_name: "{{ ssl__cert_subject_alt_name }}"
 
+- name: Check if host public key exists
+  stat:
+    path: "{{ ssl__cert_file_name }}.crt"
+  register: stat__result
+
 - name: Generate host certificate
   openssl_certificate:
     path: "{{ ssl__cert_file_name }}.crt"
@@ -20,3 +31,4 @@
     ownca_privatekey_path: "{{ ssl__ca_pvt_key }}"
     provider: ownca
     mode: 0775
+  when: not stat__result.stat.exists

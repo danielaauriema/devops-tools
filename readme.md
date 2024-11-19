@@ -16,6 +16,10 @@ Install the following software to run everything in a single local virtual machi
   
 Go to `vagrant` folder and execute `run.bat`.
 
+If everything goes well, you should be able to connect via wireguard VPN and access the home page by typig https://devops-core.local/
+
+![Home DevOps Tools](resources/home.png)
+
 ## Custom configuration
 
 To install in a different machine, add your user name and server address in ansible inventory hosts file:

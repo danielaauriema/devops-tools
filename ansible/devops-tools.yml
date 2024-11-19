@@ -1,25 +1,36 @@
 ---
+- name: Generate DevOps Core Tools Certificates
+  hosts: localhost
+  become: true
+  gather_facts: no
+  pre_tasks:
+  - import_role:
+      name: core/init
+  roles:    
+  - role: core/certificates
+    tags: core_certificates
+
 - name: DevOps Core Tools
   hosts: server
   become: true
   gather_facts: no
-
   pre_tasks:
   - import_role:
       name: core/init
-
   roles:
-    - role: core/server
-      tags: core_server
-    - role: core/ldap
-      tags: core_ldap
-    - role: core/database
-      tags: core_database
-    - role: core/gitea
-      tags: core_gitea
-    - role: core/jenkins
-      tags: core_jenkins
-    - role: core/home
-      tags: core_home
-    - role: core/nginx
-      tags: core_nginx
+  - role: core/server
+    tags: core_server
+  - role: core/ldap
+    tags: core_ldap
+  - role: core/database
+    tags: core_database
+  - role: core/gitea
+    tags: core_gitea
+  - role: core/jenkins
+    tags: core_jenkins
+  - role: core/jenkins_agents
+    tags: core_jenkins_agents
+  - role: core/home
+    tags: core_home
+  - role: core/nginx
+    tags: core_nginx

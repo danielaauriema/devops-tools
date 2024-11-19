@@ -1,0 +1,20 @@
+---
+- name: Set agent info command
+  set_fact:
+    jenkins__node_info_url: "{{ jenkins__local_url }}/computer/{{ item.name }}/jenkins-agent.jnlp"
+
+- name: Set agent info command
+  set_fact:
+    jenkins__agent_info_cmd: "curl -L -k -s -u {{ jenkins__username }}:{{ jenkins__secret }} {{ jenkins__node_info_url }} | sed 's/.*<application-desc><argument>\\([a-z0-9]*\\).*/\\1\\n/'"
+
+- name: Get node secret
+  community.docker.docker_container_exec:
+    container: jenkins
+    command: "/bin/bash -c \"{{ jenkins__agent_info_cmd }}\""  
+  register: jenkins__agent_info_response
+
+- include_role: 
+    name: docker/jenkins_agent
+  vars:
+    jenkins__network: "{{ core__docker_network }}"
+    jenkins__agent_secret: "{{ jenkins__agent_info_response.stdout }}"

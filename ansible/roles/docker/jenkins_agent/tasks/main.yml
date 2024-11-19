@@ -8,16 +8,15 @@
 - name: Create jenkins agent docker container
   docker_container:
     name: "jenkins-agent-{{ jenkins__agent_name }}"
-    image: "jenkins/jnlp-agent-docker"
+    image: "{{ jenkins__agent_image }}"
     state: started
     restart: no
     user: root
     privileged: "true"
     restart_policy : always
-    entrypoint: ["/bin/bash", "-c" ]
+    entrypoint: ["/bin/sh", "-c" ]
     command: "{{ jenkins__agent_cmd }}"
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
+    volumes: "{{ jenkins__agent_volumes }}"
     network_mode: bridge
     networks:
       - name: "{{ jenkins__network }}"

@@ -34,9 +34,9 @@
     comparisons:
       published_ports: strict
     ports: "389:389" # "{{ ldap__port_bindings }}"
-    volumes:
+    # volumes:
       # - "{{ ldap__data_path }}/start:/openldap/start"
-      - "{{ ldap__data_path }}/data:/openldap/data"
+      # - "{{ ldap__data_path }}/data:/openldap/data"
       # - "{{ ldap__data_path }}/slapd.d:/openldap/slapd.d"
     # env:
     #   LDAP_ROOT: "{{ ldap__base_dn }}"

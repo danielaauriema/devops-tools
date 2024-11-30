@@ -6,8 +6,11 @@
   pre_tasks:
   - import_role:
       name: core/init
+    tags: core_init
   roles:    
   - role: core/certificates
+    tags: core_certificates
+  - role: core/copy_certs
     tags: core_certificates
 
 - name: DevOps Core Tools
@@ -17,6 +20,7 @@
   pre_tasks:
   - import_role:
       name: core/init
+    tags: core_init
   roles:
   - role: core/server
     tags: core_server

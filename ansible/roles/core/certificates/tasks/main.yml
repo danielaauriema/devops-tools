@@ -17,3 +17,12 @@
   vars:
     ssl__cert_subdomain_name: _
     ssl__cert_common_name: "*.{{ ssl__base_domain }}"
+
+- include_role:
+    name: ssl/generate_cert
+  tags: ssl, ssl_certs
+  vars:
+    ssl__cert_subdomain_name: ldap
+    ssl__cert_common_name: "ldap.{{ ssl__base_domain }}"
+    ssl__cert_subject_alt_name:
+      - "DNS: ldap"

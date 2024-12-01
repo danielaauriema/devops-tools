@@ -89,7 +89,7 @@ LAM stands for "LDAP Account Manager" and it allows you to manage your LDAP serv
 
 Gitea is a lightweight git manager repository.
 It will be by default connected to the Open LDAP server.
-You can access it using the `gitea__admin_user` or the `ldap__user_id`.
+You can access it using the `gitea__admin_user` or the `ldap__default_username`.
 To add more users as administrators you need to add the user in the group `admin` using the `tree view` in the `tools` menu.
 This admin group is an object of type `groupOfNames` and it doesn't have support in the LAM free version, so you can only add users in this group through the tree view editor.
 

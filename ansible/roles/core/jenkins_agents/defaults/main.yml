@@ -1,7 +1,7 @@
 ---
 jenkins__local_url: http://localhost:8080
-jenkins__username: "{{ ldap__user_id }}"
-jenkins__secret: "{{ ldap__user_password }}"
+jenkins__username: "{{ ldap__default_username }}"
+jenkins__secret: "{{ ldap__default_password }}"
 jenkins__agents:
   - name: "docker"
     image: "jenkins/jnlp-agent-docker"

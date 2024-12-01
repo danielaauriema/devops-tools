@@ -34,11 +34,10 @@ EOF
 
 echo "Starting Open LDAP..."
 slapd -h "ldapi:/// ldap:///" -F "${LDAP_CONF_PATH}"
-while [ ! -e $(ldapsearch ldap:// -x) ]; do sleep 0.1; done
 
-touch /var/log/slapd.log && chmod ugo+rw /var/log/slapd.log
+while ! ldapsearch -H "ldapi://" -Y EXTERNAL -b "${LDAP_BASE_DN}"; do sleep 0.1; done
 
-ldapmodify -Y EXTERNAL -H ldapi:/// -Q -v <<EOF
+ldapmodify -Y EXTERNAL -H "ldapi:///" -Q -v <<EOF
 dn: cn=module{0},cn=config
 add: olcmoduleload
 olcModuleLoad: memberof
@@ -50,12 +49,9 @@ dn: cn=config
 changetype: modify
 replace: olcLogLevel
 olcLogLevel: -1
--
-replace: olcLogFile
-olcLogFile: ${LDAP_LOG_FILE}
 EOF
 
-ldapadd -Y EXTERNAL -H ldapi:/// -Q -v <<EOF
+ldapadd -Y EXTERNAL -H "ldapi:///" -Q -v <<EOF
 dn: olcOverlay=memberof,olcDatabase={1}${LDAP_BACKEND},cn=config
 objectClass: olcOverlayConfig
 objectClass: olcMemberOf
@@ -75,7 +71,7 @@ olcRefintAttribute: manager
 olcRefintAttribute: owner
 EOF
 
-ldapmodify -Y EXTERNAL -H ldapi:/// -Q -v <<EOF
+ldapmodify -Y EXTERNAL -H "ldapi:///" -Q -v <<EOF
 dn: olcDatabase={1}${LDAP_BACKEND},cn=config
 changetype:  modify
 replace: olcDbIndex
@@ -84,7 +80,18 @@ olcDbIndex: memberOf eq
 olcDbIndex: objectClass eq
 EOF
 
-ldapadd -H ldapi:/// -x -D "cn=${LDAP_ADMIN_USERNAME},${LDAP_BASE_DN}" -w "$LDAP_ADMIN_PASSWORD" -v <<EOF
+ldapmodify -Y EXTERNAL -H "ldapi:///" -Q -v <<EOF
+dn: olcDatabase={1}${LDAP_BACKEND},cn=config
+changetype: modify
+delete: olcAccess
+-
+add: olcAccess
+olcAccess: to * by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage by * break
+olcAccess: to attrs=userPassword,shadowLastChange by self write by dn="cn=admin,${LDAP_BASE_DN}" write by anonymous auth by * none
+olcAccess: to * by self read by dn="cn=admin,${LDAP_BASE_DN}" write by dn="cn=${LDAP_BIND_USERNAME},${LDAP_BASE_DN}" read by * none
+EOF
+
+ldapadd -H "ldapi:///" -x -D "cn=${LDAP_ADMIN_USERNAME},${LDAP_BASE_DN}" -w "$LDAP_ADMIN_PASSWORD" -v <<EOF
 dn: ou=groups,${LDAP_BASE_DN}
 objectClass: top
 objectClass: organizationalUnit
@@ -98,48 +105,30 @@ objectClass: top
 objectClass: posixGroup
 gidNumber: 1000
 
-dn: cn=${LDAP_BIND_USERNAME},ou=users,${LDAP_BASE_DN}
+dn: cn=${LDAP_BIND_USERNAME},${LDAP_BASE_DN}
 objectClass: top
 objectClass: simpleSecurityObject
 objectClass: organizationalRole
 cn: ${LDAP_BIND_USERNAME}
-userPassword: $(slappasswd -n -s $LDAP_BIND_PASSWORD)
+userPassword: $(slappasswd -n -s "${LDAP_BIND_PASSWORD}")
 
-dn: cn=${LDAP_USERNAME},ou=users,${LDAP_BASE_DN}
+dn: cn=${LDAP_DEFAULT_USERNAME},ou=users,${LDAP_BASE_DN}
 objectClass: top
 objectClass: simpleSecurityObject
 objectClass: organizationalRole
 objectClass: posixAccount
-cn: ${LDAP_USERNAME}
-uid: ${LDAP_USERNAME}
+cn: ${LDAP_DEFAULT_USERNAME}
+uid: ${LDAP_DEFAULT_USERNAME}
 uidNumber: 1001
 gidNumber: 1001
-homeDirectory: /home/${LDAP_USERNAME}
-userPassword: $(slappasswd -n -s $LDAP_PASSWORD)
+homeDirectory: /home/${LDAP_DEFAULT_USERNAME}
+userPassword: $(slappasswd -n -s "${LDAP_DEFAULT_PASSWORD}")
 
 dn: cn=admin,ou=groups,${LDAP_BASE_DN}
 objectClass: groupOfNames
 cn: admin
-member: cn=${LDAP_USERNAME},ou=users,${LDAP_BASE_DN}
+member: cn=${LDAP_DEFAULT_USERNAME},ou=users,${LDAP_BASE_DN}
 EOF
-
-if $LDAP_LDAPS_ENABLED; then
-echo "Enabling TLS protocol..."
-slapadd -b "cn=config" -f "${LDAP_CONF}" <<EOF
-add: olcTLSCACertificateFile
-olcTLSCACertificateFile: ${LDAP_TLS_CA_FILE}
--
-add: olcTLSCertificateFile
-olcTLSCertificateFile: ${LDAP_TLS_CERT_FILE}
--
-add: olcTLSCertificateKeyFile
-olcTLSCertificateKeyFile: ${LDAP_TLS_KEY_FILE}
-EOF
-sed -i -e "s%TLS_CACERT.*%TLS_CACERT    ${LDAP_TLS_CA_FILE}%" /etc/ldap/ldap.conf
-echo "*** TLS is enabled"
-else
-echo "*** TLS is disabled"
-fi
 
 echo "Stopping OpenLDAP..."
 pkill slapd

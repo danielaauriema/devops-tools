@@ -12,7 +12,5 @@
     mode: 0755
   with_fileglob:
     - "{{ ssl__ca_pub_key }}"
-    - "{{ ssl__ca_pem_key }}"
     - "{{ ssl__ca_certs_path }}/*.{{ ssl__base_domain }}.crt"
     - "{{ ssl__ca_certs_path }}/*.{{ ssl__base_domain }}.key"
-    - "{{ ssl__ca_certs_path }}/*.pem"

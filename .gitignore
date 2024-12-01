@@ -1,2 +1,4 @@
 /data
 /vagrant/.vagrant
+/ansible/roles/docker/ldap/files/build/start/init
+.idea

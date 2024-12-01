@@ -1,0 +1,16 @@
+---
+- name: Create ssl certificates directory
+  ansible.builtin.file:
+    path: "{{ core__data_path }}/ssl/certs"
+    state: directory
+    mode: 0755
+
+- name: Copy certificates certificates
+  copy:
+    src: "{{ item }}"
+    dest: "{{ core__data_path }}/ssl/certs"
+    mode: 0755
+  with_fileglob:
+    - "{{ ssl__ca_pub_key }}"
+    - "{{ ssl__ca_certs_path }}/*.{{ ssl__base_domain }}.crt"
+    - "{{ ssl__ca_certs_path }}/*.{{ ssl__base_domain }}.key"

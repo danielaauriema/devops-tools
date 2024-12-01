@@ -34,12 +34,12 @@ ldap__config_username: "master"
 ldap__config_password: "password"
 ldap__config_dn: "cn={{ ldap__config_username }},cn=config"
 
-ldap__user_id: "devops"
-ldap__user_password: "password"
-ldap__user_description: "DevOps Core User"
+ldap__default_username: "devops"
+ldap__default_password: "password"
 
+ldap__domain: "{{ core__base_domain }}"
 ldap__host: "ldap"
-ldap__port: "1389"
+ldap__port: "389"
 ldap__internal_addr: "{{ ldap__host }}"
 ldap__external_addr: "{{ core__server_internal_addr }}"
 

@@ -1,6 +1,2 @@
 ---
 - include_tasks: setup.yml
-
-- include_tasks: memberof.yml
-
-- include_tasks: init.yml 
